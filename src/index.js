@@ -8,6 +8,8 @@ import { ControlsScene } from './scenes/ControlScene.js';
 import { CreditsScene } from './scenes/CreditsScene.js';
 import {HUDScene} from './scenes/HUDScene.js';
 import { PauseScene } from './scenes/PauseScene.js';
+import { GameOverScene } from './scenes/GameOverScene.js';
+
 
 
 const config = {
@@ -27,7 +29,7 @@ const config = {
             debug: false //lo uso para ver las colisiones
         }
     },
-    scene: [PreloadScene, MenuScene, HelpScene, GameScene, HUDScene, PauseScene, SettingsScene, ControlsScene, CreditsScene]      // The first scene starts automatically
+    scene: [PreloadScene, MenuScene, HelpScene, GameScene, HUDScene, PauseScene, GameOverScene, SettingsScene, ControlsScene, CreditsScene]      // The first scene starts automatically
 };
 
 document.fonts.load('48px Pixel').then(() => {
