@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { PreloadScene } from './scenes/PreloadScene.js';
 import { GameScene } from './scenes/GameScene.js';
 import { HelpScene } from './scenes/HelpScene.js';
+import { MenuScene } from './scenes/MenuScene.js';
 
 const config = {
     type: Phaser.AUTO,      // WebGL if available; otherwise, Canvas
