@@ -51,7 +51,7 @@ preload() {
     imagenAyuda
         .on('pointerover', () => ayudaBtn.setStyle({ color: '#ffffff' }))
         .on('pointerout', () => ayudaBtn.setStyle({ color: '#ffdb35' }))
-        .on('pointerdown', () => console.log('Ayuda'));
+        .on('pointerdown', () => this.scene.start('HelpScene'));
            
          // Boton AJUSTES
     const imagenAjustes = this.add.image(325, 480, 'boton')
