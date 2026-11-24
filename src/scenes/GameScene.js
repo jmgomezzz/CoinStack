@@ -67,6 +67,8 @@ export class GameScene extends Phaser.Scene{
         this.scene.launch('HUDScene');
         //Si el juego se cierra, el HUD también
         this.events.once('shutdown', () => this.scene.stop('HUDScene'));
+        //Esc para pausar
+        this.input.keyboard.on('keydown-ESC', () => this.pausar());
         //Transición suave de entrada
         this.cameras.main.fadeIn(400);
     }
@@ -371,5 +373,13 @@ export class GameScene extends Phaser.Scene{
                 });
             }
         });
+    }
+    pausar(){
+        //No se puede pausar si ya está pausado o la partida ha terminado
+        if (this.partidaTerminada || this.scene.isPaused()) return;
+
+        //pause congela update, físicas, temporizadores y tweens
+        this.scene.pause();
+        this.scene.launch('PauseScene');
     }
 }

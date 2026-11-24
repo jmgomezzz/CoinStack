@@ -18,6 +18,14 @@ export class HUDScene extends Phaser.Scene {
         this.add.rectangle(160, 7, 44, 12, 0x000000, 0.7).setStrokeStyle(1, 0xffffff);
         this.textoTiempo = this.add.text(160, 8, '', { ...ESTILO, color: '#ed1c24' }).setOrigin(0.5);
 
+        //Botón de pausa (arriba a la derecha)
+        this.botonPausa = this.add.image(308, 8, 'boton_pausa')
+            .setDisplaySize(12, 11)
+            .setInteractive({ useHandCursor: true })
+            .on('pointerover', () => this.botonPausa.setTint(0xffc20e))
+            .on('pointerout', () => this.botonPausa.clearTint())
+            .on('pointerdown', () => this.juego.pausar());
+
         //Paneles de cada jugador (abajo a cada lado)
         this.paneles = {
             j1: this.crearPanel(4, 'icono_velox', false),
@@ -117,4 +125,5 @@ export class HUDScene extends Phaser.Scene {
     actualizarSobrecarga(id, activa){
     this.paneles[id].x2.setVisible(activa);
     }
+    
 }
