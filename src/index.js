@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { TestScene } from './scenes/TestScene.js';
+import { PreloadScene } from './scenes/PreloadScene.js';
+import { GameScene } from './scenes/GameScene.js';
 
 const config = {
     type: Phaser.AUTO,      // WebGL if available; otherwise, Canvas
@@ -15,10 +16,10 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: false //lo uso para ver las colisiones
+            debug: true //lo uso para ver las colisiones
         }
     },
-    scene: [TestScene]      // The first scene starts automatically
+    scene: [PreloadScene, GameScene]      // The first scene starts automatically
 };
 
 new Phaser.Game(config);
