@@ -40,7 +40,7 @@ export class HelpScene extends Phaser.Scene {
         //imagen de los controles
         this.add.image(160, 103, 'controles')
             .setOrigin(0.5)
-            .setDisplaySize(176, 99);
+            .setDisplaySize(192, 108);
 
         //boton VOLVER
         const imagenVolver = this.add.image(160, 165, 'boton')
