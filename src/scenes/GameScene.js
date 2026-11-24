@@ -12,7 +12,11 @@ const DURACION = 120; //Duración de la partida en segundos
 const INTERVALO_FANTASMA = 15000;//Cada cuánto aparece un fantasma (ms)
 const PENALIZACION_FANTASMA = 6;//Puntos que quita
 const INTERVALO_BATERIA = 15000; //cada 15 s
-const MAX_BATERIAS_MAPA = 3; //Máximo de pilas a la vez en el suelo
+const MAX_BATERIAS_MAPA = 3;//Máximo de pilas a la vez en el suelo
+const INTERVALO_ALTAVOZ = 10000;//cada 10 s
+const MAX_ALTAVOCES_MAPA = 1;
+const RADIO_ALTAVOZ = 70;//Alcance de la onda en píxeles
+const DURACION_ATURDIDO = 6000;// 6 s
 
 // # = barrera, O = obstáculo, A = salida J1, R = salida J2, . = suelo
 
@@ -198,6 +202,7 @@ export class GameScene extends Phaser.Scene{
             .setDepth(1000);
         this.fantasmas.getChildren().forEach(f => f.desaparecer());
         this.jugadores.forEach(j => j.terminarSobrecarga());
+        this.jugadores.forEach(j => j.recuperarse()); // Por si estaba aturdido al final de la partida
     }
     crearFantasmas(){
         this.fantasmas = this.physics.add.group();
@@ -246,6 +251,11 @@ export class GameScene extends Phaser.Scene{
             loop: true,
             callback: () => this.generarObjeto('bateria', MAX_BATERIAS_MAPA)
         });
+        this.time.addEvent({
+            delay: INTERVALO_ALTAVOZ,
+            loop: true,
+            callback: () => this.generarObjeto('altavoz', MAX_ALTAVOCES_MAPA)
+        });
     }
 
     generarObjeto(tipo, maximo){
@@ -264,8 +274,10 @@ export class GameScene extends Phaser.Scene{
 
             const texto = jugador.baterias === 4 ? '¡LISTA!' : jugador.baterias + '/4';
             this.textoFlotante(objeto.x, objeto.y - 10, texto, '#20c47e');
+        }else if (objeto.tipo === 'altavoz'){ //Altavoz, no mas TODO :)
+            objeto.recoger();
+            this.usarAltavoz(jugador);
         }
-        //TODO: altavoz
     }
 
 
@@ -275,4 +287,32 @@ export class GameScene extends Phaser.Scene{
         this.fantasmas.getChildren().forEach(fantasma => fantasma.perseguir(this.jugadores)); //cada fotograma persigue al mas cercano
         
     }   
+    usarAltavoz(jugador){
+        const rival = this.jugadores.find(j => j !== jugador);
+        const x = jugador.sprite.x;
+        const y = jugador.sprite.y - 10;
+
+        //Onda expansiva
+        const onda = this.add.circle(x, y, RADIO_ALTAVOZ, 0xffffff, 0)
+            .setStrokeStyle(2, 0xffc20e)
+            .setScale(0.1)
+            .setDepth(999);
+        this.tweens.add({
+            targets: onda,
+            scale: 1,
+            alpha: 0,
+            duration: 400,
+            onComplete: () => onda.destroy()
+        });
+        this.cameras.main.shake(100, 0.005);
+
+        //Está el rival dentro del radio?
+        const distancia = Phaser.Math.Distance.Between(x, y, rival.sprite.x, rival.sprite.y - 10);
+        if (distancia <= RADIO_ALTAVOZ){
+            rival.aturdir(DURACION_ATURDIDO);
+            this.textoFlotante(rival.sprite.x, rival.sprite.y - 40, '¡ATURDIDO!', '#8888ff');
+        } else {
+            this.textoFlotante(x, y - 30, '¡FALLO!', '#aaaaaa');
+        }
+    }
 }
