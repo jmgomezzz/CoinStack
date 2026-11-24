@@ -56,7 +56,7 @@ export class Player{
     }
 
     sumarPuntos(cantidad){
-        this.puntos += cantidad;
+        this.puntos = Math.max(0, this.puntos + cantidad); //Nunca baja de 0
     }
 }
 

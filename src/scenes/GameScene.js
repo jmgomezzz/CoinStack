@@ -1,11 +1,14 @@
 import Phaser from 'phaser';
 import { Player } from '../entities/Player.js';
 import { Coins } from '../entities/Coins.js';
+import { Ghost } from '../entities/Ghost.js';
 
 const TILE = 10; //Tamaño de los tiles
 const PROB_ESPECIAL = 0.15; //Prob de moneda especial
 const MAX_MONEDAS = 10; //Máximo de monedas en pantalla
 const DURACION = 120; //Duración de la partida en segundos
+const INTERVALO_FANTASMA = 15000;//Cada cuánto aparece un fantasma (ms)
+const PENALIZACION_FANTASMA = 6;//Puntos que quita
 
 // # = barrera, O = obstáculo, A = salida J1, R = salida J2, . = suelo
 
@@ -41,6 +44,7 @@ export class GameScene extends Phaser.Scene{
         this.crearZonas();
         this.crearMapa();
         this.crearMonedas();
+        this.crearFantasmas();
         this.crearJugadores();
         this.crearTemporizador();
 
@@ -104,6 +108,10 @@ export class GameScene extends Phaser.Scene{
             //overlap con monedas
             this.physics.add.overlap(jugador.sprite, this.monedas, (sprite, moneda) => {
                 this.recogerMoneda(jugador, moneda);
+            });
+            //overlap con fantasmas
+            this.physics.add.overlap(jugador.sprite, this.fantasmas, (sprite, fantasma) => {
+                this.tocarFantasma(jugador, fantasma);
             });
         });
     }
@@ -178,10 +186,54 @@ export class GameScene extends Phaser.Scene{
         this.add.text(160, 90, '¡TIEMPO!', { fontFamily: 'Pixel', fontSize: '16px', color: '#ffc20e' })
             .setOrigin(0.5)
             .setDepth(1000);
+        this.fantasmas.getChildren().forEach(f => f.desaparecer());
     }
+    crearFantasmas(){
+        this.fantasmas = this.physics.add.group();
+
+        this.time.addEvent({
+            delay: INTERVALO_FANTASMA,
+            loop: true,
+            callback: () => this.generarFantasma()
+        });
+    }
+
+    generarFantasma(){
+        //Casillas a más de 60 px de los dos robots, para que no aparezca encima de nadie
+        const lejos = this.celdasLibres.filter(c =>
+            this.jugadores.every(j => Phaser.Math.Distance.Between(c.x, c.y, j.sprite.x, j.sprite.y) > 60)
+        );
+        //Por si acaso no hubiera ninguna lejos, usamos cualquiera
+        const celda = Phaser.Utils.Array.GetRandom(lejos.length > 0 ? lejos : this.celdasLibres);
+
+        this.fantasmas.add(new Ghost(this, celda.x, celda.y + 5));
+    }
+
+    tocarFantasma(jugador, fantasma){
+        if (!fantasma.activo) return;   //Mientras aparece o desaparece no hace daño
+        fantasma.desaparecer();
+
+        jugador.sumarPuntos(-PENALIZACION_FANTASMA);
+        this.events.emit('puntos', jugador.id, jugador.puntos);
+        this.textoFlotante(jugador.sprite.x, jugador.sprite.y - 40, '-' + PENALIZACION_FANTASMA, '#ffffff');
+
+        //Feedback: tiembla la cámara y el robot parpadea
+        this.cameras.main.shake(150, 0.01);
+        this.tweens.add({
+            targets: jugador.sprite,
+            alpha: 0.3,
+            duration: 80,
+            yoyo: true,
+            repeat: 3
+        });
+    }
+
+
+
     update(){
         if(this.partidaTerminada) return;
         this.jugadores.forEach(jugador => jugador.update());
+        this.fantasmas.getChildren().forEach(fantasma => fantasma.perseguir(this.jugadores)); //cada fotograma persigue al mas cercano
         
     }   
 }
