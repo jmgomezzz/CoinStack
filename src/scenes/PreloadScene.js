@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CONTROLES_POR_DEFECTO } from '../config.js';
 
 export class PreloadScene extends Phaser.Scene{
     constructor(){
@@ -50,6 +51,25 @@ export class PreloadScene extends Phaser.Scene{
     }
 
     create(){
+        //Solo ponemos los controles por defecto si no hay guardados ya
+        if(!this.registry.has('controles')){
+            this.registry.set('controles', CONTROLES_POR_DEFECTO);
+        }
+
+        //Animaciones de andar
+        this.anims.create({
+            key: 'flashy_andar',
+            frames: this.anims.generateFrameNumbers('robots', { start: 0, end: 3 }),
+            frameRate: 8,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'velox_andar',
+            frames: this.anims.generateFrameNumbers('robots', { start: 4, end: 7 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
         this.scene.start('GameScene');
     }
 }

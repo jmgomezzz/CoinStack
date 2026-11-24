@@ -16,7 +16,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true //lo uso para ver las colisiones
+            debug: false //lo uso para ver las colisiones
         }
     },
     scene: [PreloadScene, GameScene]      // The first scene starts automatically
