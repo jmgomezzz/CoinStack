@@ -1,3 +1,4 @@
+
 import Phaser from 'phaser';
 
 export class HelpScene extends Phaser.Scene {
@@ -8,41 +9,46 @@ export class HelpScene extends Phaser.Scene {
 
     create() {
 
-        // Fondo de pantalla
+        //fondo de pantalla
         this.add.image(0, 0, 'fondo')
             .setOrigin(0, 0)
             .setDisplaySize(320, 180);
 
-        // Fondo oscuro
-        this.add.rectangle(160, 90, 275, 150, 0x000000, 0.8);
+        //fondo oscuro
+        this.add.rectangle(160, 90, 310, 176, 0x000000, 0.8);
 
-        // Titulo-> boton AYUDA
-        this.add.text(160, 30, 'AYUDA', {
-            fontSize: '16px',
+        //titulo AYUDA
+        this.add.text(160, 12, 'AYUDA', {
+            fontSize: '12px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
-        // Instrucciones
-        this.add.text(160, 80,
-            'OBJETIVO DEL JUEGO:\n\n' +
-            'Recoge todas las monedas que puedas con tu robot.\n\n' +
+        //instrucciones
+        this.add.text(160, 33,
+            'OBJETIVO DEL JUEGO:\n' +
+            'Recoge todas las monedas que puedas.\n' +
             'Consigue más monedas que tu rival.', {
-            fontSize: '8px',
-            fontFamily: 'Pixel',
-            color: '#ffffff',
-            align: 'center',
-            lineSpacing: 4,
-            wordWrap: { width: 260 }
-        }).setOrigin(0.5);
+                fontSize: '7px',
+                fontFamily: 'Pixel',
+                color: '#ffffff',
+                align: 'center',
+                lineSpacing: 3,
+                wordWrap: { width: 290 }
+            }).setOrigin(0.5);
 
-        // Boton VOLVER
-        const imagenVolver = this.add.image(160, 142, 'boton')
-            .setDisplaySize(125, 28)
+        //imagen de los controles
+        this.add.image(160, 103, 'controles')
+            .setOrigin(0.5)
+            .setDisplaySize(176, 99);
+
+        //boton VOLVER
+        const imagenVolver = this.add.image(160, 165, 'boton')
+            .setDisplaySize(125, 24)
             .setInteractive({ useHandCursor: true });
 
-        const volverBtn = this.add.text(160, 142, 'VOLVER', {
-            fontSize: '16px',
+        const volverBtn = this.add.text(160, 165, 'VOLVER', {
+            fontSize: '12px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
