@@ -85,7 +85,7 @@ export class SettingsScene extends Phaser.Scene {
         imagenControles
             .on('pointerover', () => controlesBtn.setStyle({ color: '#ffffff' }))
             .on('pointerout', () => controlesBtn.setStyle({ color: '#ffdb35' }))
-            .on('pointerdown', () => console.log('Cambiar controles'));
+            .on('pointerdown', () => this.scene.start('ControlsScene'));
 
 
         //boton VOLVER
