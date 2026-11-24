@@ -8,6 +8,7 @@ export class ControlsScene extends Phaser.Scene {
     }
 
     create() {
+        const controles = this.registry.get('controles');
 
         //fondo
         this.add.image(0, 0, 'fondo')
