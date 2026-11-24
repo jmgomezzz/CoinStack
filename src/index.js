@@ -7,6 +7,8 @@ import { SettingsScene } from './scenes/SettingsScene.js';
 import { ControlsScene } from './scenes/ControlScene.js';
 import { CreditsScene } from './scenes/CreditsScene.js';
 import {HUDScene} from './scenes/HUDScene.js';
+import { PauseScene } from './scenes/PauseScene.js';
+
 
 const config = {
     type: Phaser.AUTO,      // WebGL if available; otherwise, Canvas
@@ -25,7 +27,7 @@ const config = {
             debug: false //lo uso para ver las colisiones
         }
     },
-    scene: [PreloadScene, MenuScene, HelpScene, GameScene, HUDScene, SettingsScene, ControlsScene, CreditsScene]      // The first scene starts automatically
+    scene: [PreloadScene, MenuScene, HelpScene, GameScene, HUDScene, PauseScene, SettingsScene, ControlsScene, CreditsScene]      // The first scene starts automatically
 };
 
 document.fonts.load('48px Pixel').then(() => {

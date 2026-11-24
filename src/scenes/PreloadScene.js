@@ -55,6 +55,7 @@ export class PreloadScene extends Phaser.Scene{
         this.load.image('boton_reinicio', 'assets/images/interfaz/boton_reinicio.png');
         this.load.image('controles', 'assets/images/menu/controles.png');
         this.load.image('game_over', 'assets/images/interfaz/game_over.png');
+        this.load.image('boton', 'assets/images/menu/boton.png');
 
     }
 
