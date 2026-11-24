@@ -4,7 +4,7 @@ import { GameScene } from './scenes/GameScene.js';
 import { HelpScene } from './scenes/HelpScene.js';
 import { MenuScene } from './scenes/MenuScene.js';
 import { SettingsScene } from './scenes/SettingsScene.js';
-import { ControlsScene } from './scenes/ControlsScene.js';
+import { ControlsScene } from './scenes/ControlScene.js';
 import { CreditsScene } from './scenes/CreditsScene.js';
 import {HUDScene} from './scenes/HUDScene.js';
 
