@@ -1,3 +1,4 @@
+
 import Phaser from 'phaser';
 import { CONTROLES_POR_DEFECTO } from '../config.js';
 
@@ -8,40 +9,11 @@ export class ControlsScene extends Phaser.Scene {
     }
 
     create() {
-        // BOTÓN RESTABLECER
-    const imagenRestablecer = this.add.image(85, 162, 'boton')
-        .setDisplaySize(150, 25)
-        .setInteractive({ useHandCursor: true });
-
-    const restablecerBtn = this.add.text(85, 162, 'RESTABLECER', {
-        fontSize: '9px',
-        fontFamily: 'Pixel',
-        color: '#ffdb35'
-    }).setOrigin(0.5);
-
-    imagenRestablecer
-        .on('pointerover', () => restablecerBtn.setStyle({ color: '#ffffff' }))
-        .on('pointerout', () => restablecerBtn.setStyle({ color: '#ffdb35' }))
-        .on('pointerdown', () => {
-
-            if (!this.cambiandoTecla) {
-
-                this.registry.set('controles', {
-                    j1: { ...CONTROLES_POR_DEFECTO.j1 },
-                    j2: { ...CONTROLES_POR_DEFECTO.j2 }
-                });
-
-                this.scene.restart();
-            }
-        });
-
-        //recuperar controles
-        const controles = this.registry.get('controles');
 
         //variable para saber si estamos cambiando una tecla
         this.cambiandoTecla = false;
 
-        //fondo
+        // Fondo
         this.add.image(0, 0, 'fondo')
             .setOrigin(0, 0)
             .setDisplaySize(320, 180);
@@ -50,21 +22,21 @@ export class ControlsScene extends Phaser.Scene {
         this.add.rectangle(160, 90, 320, 180, 0x555555, 0.7);
 
         //titulo
-        this.add.text(160, 18, 'CAMBIAR CONTROLES', {
+        this.add.text(160, 15, 'CAMBIAR CONTROLES', {
             fontSize: '12px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
         //jugador 1
-        this.add.text(80, 42, 'JUGADOR 1', {
+        this.add.text(80, 35, 'JUGADOR 1', {
             fontSize: '10px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
         //jugador 2
-        this.add.text(240, 42, 'JUGADOR 2', {
+        this.add.text(240, 35, 'JUGADOR 2', {
             fontSize: '10px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
@@ -72,34 +44,60 @@ export class ControlsScene extends Phaser.Scene {
 
 
         //CONTROLES JUGADOR 1
-        this.crearBotonControl(10, 60, 'ARRIBA', 'j1', 'arriba');
-        this.crearBotonControl(10, 80, 'ABAJO', 'j1', 'abajo');
-        this.crearBotonControl(10, 100, 'IZQUIERDA', 'j1', 'izquierda');
-        this.crearBotonControl(10, 120, 'DERECHA', 'j1', 'derecha');
-
+        this.crearBotonControl(10, 52, 'ARRIBA', 'j1', 'arriba');
+        this.crearBotonControl(10, 70, 'ABAJO', 'j1', 'abajo');
+        this.crearBotonControl(10, 88, 'IZQUIERDA', 'j1', 'izquierda');
+        this.crearBotonControl(10, 106, 'DERECHA', 'j1', 'derecha');
+        this.crearBotonControl(10, 124, 'SOBRECARGA', 'j1', 'sobrecarga');
 
         //CONTROLES JUGADOR 2
-        this.crearBotonControl(170, 60, 'ARRIBA', 'j2', 'arriba');
-        this.crearBotonControl(170, 80, 'ABAJO', 'j2', 'abajo');
-        this.crearBotonControl(170, 100, 'IZQUIERDA', 'j2', 'izquierda');
-        this.crearBotonControl(170, 120, 'DERECHA', 'j2', 'derecha');
+        this.crearBotonControl(170, 52, 'ARRIBA', 'j2', 'arriba');
+        this.crearBotonControl(170, 70, 'ABAJO', 'j2', 'abajo');
+        this.crearBotonControl(170, 88, 'IZQUIERDA', 'j2', 'izquierda');
+        this.crearBotonControl(170, 106, 'DERECHA', 'j2', 'derecha');
+        this.crearBotonControl(170, 124, 'SOBRECARGA', 'j2', 'sobrecarga');
 
-
-        //instrucciones
+        //Instrucciones
         this.instrucciones = this.add.text(
-            160, 140, 'PULSA SOBRE UN CONTROL', {
+            160, 143, 'PULSA SOBRE UN CONTROL', {
                 fontSize: '7px',
                 fontFamily: 'Pixel',
                 color: '#ffffff'
             }).setOrigin(0.5);
 
 
+        //boton RESTABLECER
+        const imagenRestablecer = this.add.image(85, 165, 'boton')
+            .setDisplaySize(150, 25)
+            .setInteractive({ useHandCursor: true });
+
+        const restablecerBtn = this.add.text(85, 165, 'RESTABLECER', {
+            fontSize: '9px',
+            fontFamily: 'Pixel',
+            color: '#ffdb35'
+        }).setOrigin(0.5);
+
+        imagenRestablecer
+            .on('pointerover', () => restablecerBtn.setStyle({ color: '#ffffff' }))
+            .on('pointerout', () => restablecerBtn.setStyle({ color: '#ffdb35' }))
+            .on('pointerdown', () => {
+
+            if (!this.cambiandoTecla) {
+
+                this.registry.set('controles', {
+                    j1: { ...CONTROLES_POR_DEFECTO.j1 },
+                    j2: { ...CONTROLES_POR_DEFECTO.j2 }
+                });
+                this.scene.restart();
+                }
+            });
+
         //boton VOLVER
-        const imagenVolver = this.add.image(240, 162, 'boton')
+        const imagenVolver = this.add.image(240, 165, 'boton')
             .setDisplaySize(125, 25)
             .setInteractive({ useHandCursor: true });
 
-        const volverBtn = this.add.text(240, 162, 'VOLVER', {
+        const volverBtn = this.add.text(240, 165, 'VOLVER', {
             fontSize: '12px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
@@ -122,19 +120,19 @@ export class ControlsScene extends Phaser.Scene {
 
         const controles = this.registry.get('controles');
 
-        //movimiento
+        // Nombre del movimiento
         this.add.text(x, y, nombre, {
-            fontSize: '8px',
+            fontSize: '7px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0, 0.5);
 
         //boton
         const imagenBoton = this.add.image(x + 112, y, 'boton')
-            .setDisplaySize(65, 19)
+            .setDisplaySize(65, 17)
             .setInteractive({ useHandCursor: true });
 
-        //tecla actual
+        //Tecla actual
         const textoTecla = this.add.text(
             x + 112, y, controles[jugador][movimiento], {
                 fontSize: '7px',
@@ -158,7 +156,7 @@ export class ControlsScene extends Phaser.Scene {
 
                 this.instrucciones.setText('PULSA UNA NUEVA TECLA');
 
-                //esperar a que el usuario pulse una tecla
+                // Esperar a que el usuario pulse una tecla
                 this.input.keyboard.once('keydown', (event) => {
 
                     const nuevaTecla = Object.keys(
@@ -167,12 +165,12 @@ export class ControlsScene extends Phaser.Scene {
                         Phaser.Input.Keyboard.KeyCodes[tecla] === event.keyCode
                     );
 
-                    //comprobar si la tecla ya está asignada en el jugador
+                    // Comprobar si la tecla ya esta asignada
                     const teclaOcupada =
                         Object.values(controles.j1).includes(nuevaTecla) ||
                         Object.values(controles.j2).includes(nuevaTecla);
 
-                    //comprobar que la tecla es válida y no se usa
+                    // Comprobar que la tecla es valida y no se usa
                     if (nuevaTecla && nuevaTecla !== 'ESC' && !teclaOcupada) {
 
                         controles[jugador][movimiento] = nuevaTecla;
@@ -184,11 +182,13 @@ export class ControlsScene extends Phaser.Scene {
                         this.instrucciones.setText('TECLA YA UTILIZADA');
 
                         this.time.delayedCall(2000, () => {
-                            this.instrucciones.setText('PULSA SOBRE UN CONTROL');
+                            if (!this.cambiandoTecla) {
+                                this.instrucciones.setText('PULSA SOBRE UN CONTROL');
+                            }
                         });
                     }
 
-                    //actualiza el texto del botón
+                    // Actualizar el texto del boton
                     textoTecla.setText(controles[jugador][movimiento]);
 
                     if (!teclaOcupada) {
@@ -200,3 +200,4 @@ export class ControlsScene extends Phaser.Scene {
             });
     }
 }
+
