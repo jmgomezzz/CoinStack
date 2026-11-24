@@ -90,7 +90,7 @@ export class ControlsScene extends Phaser.Scene {
     }
 
 
-    //funcio que crea y modifica los controles
+    //funcion que crea y modifica los controles
     crearBotonControl(x, y, nombre, jugador, movimiento) {
 
         const controles = this.registry.get('controles');
@@ -140,18 +140,33 @@ export class ControlsScene extends Phaser.Scene {
                         Phaser.Input.Keyboard.KeyCodes[tecla] === event.keyCode
                     );
 
-                    //comprobar que la tecla sea válida
-                    if (nuevaTecla && nuevaTecla !== 'ESC') {
+                    //comprobar si la tecla ya está asignada en el jugador
+                    const teclaOcupada =
+                        Object.values(controles.j1).includes(nuevaTecla) ||
+                        Object.values(controles.j2).includes(nuevaTecla);
+
+                    //comprobar que la tecla es válida y no se usa
+                    if (nuevaTecla && nuevaTecla !== 'ESC' && !teclaOcupada) {
 
                         controles[jugador][movimiento] = nuevaTecla;
 
                         this.registry.set('controles', controles);
+
+                    } else if (teclaOcupada) {
+
+                        this.instrucciones.setText('TECLA YA UTILIZADA');
+
+                        this.time.delayedCall(2000, () => {
+                            this.instrucciones.setText('PULSA SOBRE UN CONTROL');
+                        });
                     }
 
                     //actualiza el texto del botón
                     textoTecla.setText(controles[jugador][movimiento]);
 
-                    this.instrucciones.setText('PULSA SOBRE UN CONTROL');
+                    if (!teclaOcupada) {
+                        this.instrucciones.setText('PULSA SOBRE UN CONTROL');
+                    }
 
                     this.cambiandoTecla = false;
                 });
