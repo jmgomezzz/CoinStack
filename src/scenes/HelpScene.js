@@ -37,10 +37,17 @@ export class HelpScene extends Phaser.Scene {
                 wordWrap: { width: 290 }
             }).setOrigin(0.5);
 
-        //imagen de los controles
-        this.add.image(160, 103, 'controles')
-            .setOrigin(0.5)
-            .setDisplaySize(192, 108);
+        //Controles en texto: se leen nítidos y muestran las teclas actuales (si se cambian en Ajustes, aquí se ven)
+        const controles = this.registry.get('controles');
+        this.crearColumnaControles(14, 150, 'VELOX', '#ed1c24', controles.j1);
+        this.crearColumnaControles(170, 306, 'FLASHY', '#00b7ef', controles.j2);
+        this.add.rectangle(160, 85, 1, 64, 0xffffff, 0.3); //separador
+
+        this.add.text(160, 132, 'PAUSA: ESC', {
+            fontSize: '8px',
+            fontFamily: 'Pixel',
+            color: '#ffffff'
+        }).setOrigin(0.5);
 
         //boton VOLVER
         const imagenVolver = this.add.image(160, 165, 'boton')
