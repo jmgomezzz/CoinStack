@@ -5,7 +5,7 @@ const config = {
     type: Phaser.AUTO,      // WebGL if available; otherwise, Canvas
     width: 320,  //Para la resolucion interna y que cuadren los sprites
     height: 180,
-    pixelart: true, //Para quitar el suavizado q se veia mal
+    pixelArt: true, //Para quitar el suavizado q se veia mal
     backgroundColor: '#269163', // el verde de la paleta
     scale: {
         mode: Phaser.Scale.FIT,
