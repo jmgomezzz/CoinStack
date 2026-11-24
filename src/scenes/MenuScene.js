@@ -14,20 +14,21 @@ preload() {
     create() {
         //fondo del menu
         this.add.image(0, 0, 'fondo')
-            .setOrigin(0, 0)
-            .setDisplaySize(1280, 720);
+            .setOrigin(0, 0)
+            .setDisplaySize(320, 180);
 
         //titulo del menu
         this.add.image(0, 0, 'titulo')
-            .setOrigin(0, 0);
+            .setOrigin(0, 0)
+            .setDisplaySize(320, 180);
             
         // Boton JUGAR
-    const imagenJugar = this.add.image(325, 240, 'boton')
-    .setDisplaySize(500, 110)
+    const imagenJugar = this.add.image(81, 60, 'boton')
+    .setDisplaySize(125, 28)
     .setInteractive({ useHandCursor: true });
 
-    const localBtn = this.add.text(325, 240, 'JUGAR', {
-        fontSize: '48px',
+    const localBtn = this.add.text(81, 60, 'JUGAR', {
+        fontSize: '16px',
         fontFamily: 'Pixel',
         color: '#ffdb35'
     }).setOrigin(0.5);
@@ -38,12 +39,12 @@ preload() {
         .on('pointerdown', () => this.scene.start('GameScene'));
         
         // Boton AYUDA
-    const imagenAyuda = this.add.image(325, 360, 'boton')
-        .setDisplaySize(500, 110)
+    const imagenAyuda = this.add.image(81, 90, 'boton')
+        .setDisplaySize(125, 28)
         .setInteractive({ useHandCursor: true });
 
-    const ayudaBtn = this.add.text(325, 360, 'AYUDA', {
-        fontSize: '48px',
+    const ayudaBtn = this.add.text(81, 90, 'AYUDA', {
+        fontSize: '16px',
         fontFamily: 'Pixel',
         color: '#ffdb35'
     }).setOrigin(0.5);
@@ -54,12 +55,12 @@ preload() {
         .on('pointerdown', () => this.scene.start('HelpScene'));
            
          // Boton AJUSTES
-    const imagenAjustes = this.add.image(325, 480, 'boton')
-        .setDisplaySize(500, 110)
+    const imagenAjustes = this.add.image(81, 120, 'boton')
+        .setDisplaySize(125, 28)
         .setInteractive({ useHandCursor: true });
 
-    const ajustesBtn = this.add.text(325, 480, 'AJUSTES', {
-        fontSize: '48px',
+    const ajustesBtn = this.add.text(81, 120, 'AJUSTES', {
+        fontSize: '16px',
         fontFamily: 'Pixel',
         color: '#ffdb35'
     }).setOrigin(0.5);
@@ -71,12 +72,12 @@ preload() {
        
         // Boton SALIR
     
-    const imagenSalir = this.add.image(325, 600, 'boton')
-        .setDisplaySize(500, 110)
+    const imagenSalir = this.add.image(81, 150, 'boton')
+        .setDisplaySize(125, 28)
         .setInteractive({ useHandCursor: true });
 
-    const salirBtn = this.add.text(325, 600, 'SALIR', {
-        fontSize: '48px',
+    const salirBtn = this.add.text(81, 150, 'SALIR', {
+        fontSize: '16px',
         fontFamily: 'Pixel',
         color: '#ffdb35'
     }).setOrigin(0.5);
