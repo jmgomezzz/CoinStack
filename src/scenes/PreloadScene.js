@@ -70,6 +70,20 @@ export class PreloadScene extends Phaser.Scene{
             repeat: -1
         });
 
+        //Animaciones de las monedas
+        this.anims.create({
+            key: 'moneda_brillo',
+            frames: [{ key: 'moneda_1' }, { key: 'moneda_2' }],
+            frameRate: 4,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'moneda_especial_brillo',
+            frames: [{ key: 'moneda_especial_1' }, { key: 'moneda_especial_2' }],
+            frameRate: 4,
+            repeat: -1
+        }); 
+
         //Esperamos a que la fuente esté lista antes de pintar ningún texto
         document.fonts.load('8px Pixel').then(() => {
             //Cuando el menú esté en index.js, cambiar por 'MenuScene'
