@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { Player } from '../entities/Player.js';
 
 const TILE = 10; //Tamaño de los tiles
 
@@ -33,6 +34,7 @@ export class GameScene extends Phaser.Scene{
     create(){
         this.crearZonas();
         this.crearMapa();
+        this.crearJugadores();
 
         //Transición suave de entrada
         this.cameras.main.fadeIn(400);
@@ -57,9 +59,11 @@ export class GameScene extends Phaser.Scene{
                 const y = f * TILE + TILE/2;
 
                 if(caracter === '#'){
-                    this.muros.create(x, y, 'barrera');
+                    const muro = this.muros.create(x, y, 'barrera');
+                    muro.setDepth(muro.y + muro.height / 2);
                 } else if (caracter === 'O'){
-                    this.muros.create(x, y, 'obstaculo');
+                    const muro = this.muros.create(x, y, 'obstaculo');
+                    muro.setDepth(muro.y + muro.height / 2);
                 } else if (caracter === 'A' || caracter === 'R'){
                     //con tilesprite repite la casilla 6*6 hasta llenar 18*18
                     const textura = caracter === 'A' ? 'casilla_azul' : 'casilla_roja';
@@ -69,4 +73,23 @@ export class GameScene extends Phaser.Scene{
             });
         });
     }
+
+    crearJugadores(){
+        const controles = this.registry.get('controles');
+        //+9 para que se queden en el borde inferior de la casilla
+        this.jugador1 = new Player(this, 'j1', this.salidas.A.x, this.salidas.A.y + 9, controles.j1, 'velox');
+        this.jugador2 = new Player(this, 'j2', this.salidas.R.x, this.salidas.R.y + 9, controles.j2, 'flashy');
+        this.jugadores = [this.jugador1, this.jugador2];
+
+
+        //Colisiones con paredes
+        this.jugadores.forEach(jugador => {
+            this.physics.add.collider(jugador.sprite, this.muros);
+        });
+    }
+
+    update(){
+        this.jugadores.forEach(jugador => jugador.update());
+        
+    }   
 }
