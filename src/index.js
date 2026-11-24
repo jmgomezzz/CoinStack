@@ -4,6 +4,8 @@ import { GameScene } from './scenes/GameScene.js';
 import { HelpScene } from './scenes/HelpScene.js';
 import { MenuScene } from './scenes/MenuScene.js';
 import { SettingsScene } from './scenes/SettingsScene.js';
+import { HUDScene } from './scenes/HUDScene.js';
+
 
 
 const config = {
@@ -23,7 +25,7 @@ const config = {
             debug: false //lo uso para ver las colisiones
         }
     },
-    scene: [PreloadScene, MenuScene, HelpScene, GameScene, SettingsScene]      // The first scene starts automatically
+    scene: [PreloadScene, MenuScene, HelpScene, GameScene, HUDScene, SettingsScene]      // The first scene starts automatically
 };
 
 document.fonts.load('48px Pixel').then(() => {
