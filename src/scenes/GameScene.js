@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { Player } from '../entities/Player.js';
 import { Coins } from '../entities/Coins.js';
 import { Ghost } from '../entities/Ghost.js';
+import { PowerUp } from '../entities/PowerUp.js';
+
 
 const TILE = 10; //Tamaño de los tiles
 const PROB_ESPECIAL = 0.15; //Prob de moneda especial
@@ -9,6 +11,8 @@ const MAX_MONEDAS = 10; //Máximo de monedas en pantalla
 const DURACION = 120; //Duración de la partida en segundos
 const INTERVALO_FANTASMA = 15000;//Cada cuánto aparece un fantasma (ms)
 const PENALIZACION_FANTASMA = 6;//Puntos que quita
+const INTERVALO_BATERIA = 15000; //cada 15 s
+const MAX_BATERIAS_MAPA = 3; //Máximo de pilas a la vez en el suelo
 
 // # = barrera, O = obstáculo, A = salida J1, R = salida J2, . = suelo
 
@@ -45,6 +49,7 @@ export class GameScene extends Phaser.Scene{
         this.crearMapa();
         this.crearMonedas();
         this.crearFantasmas();
+        this.crearObjetos();
         this.crearJugadores();
         this.crearTemporizador();
 
@@ -76,7 +81,8 @@ export class GameScene extends Phaser.Scene{
                 const y = f * TILE + TILE/2;
 
                 if(caracter === '#'){
-                    const muro = this.muros.create(x, y, 'barrera');
+                    const esBorde = f === 0 || f === MAPA.length - 1 || c === 0 || c === fila.length - 1; //Verifica si es un borde
+                    const muro = this.muros.create(x, y, esBorde ? 'barrera' : 'barrera_2');
                     muro.setDepth(muro.y + muro.height / 2);
                 } else if (caracter === 'O'){
                     const muro = this.muros.create(x, y, 'obstaculo');
@@ -113,6 +119,10 @@ export class GameScene extends Phaser.Scene{
             this.physics.add.overlap(jugador.sprite, this.fantasmas, (sprite, fantasma) => {
                 this.tocarFantasma(jugador, fantasma);
             });
+            //overlap con objetos (pilas y altavoces)
+            this.physics.add.overlap(jugador.sprite, this.objetos, (sprite, objeto) => {
+                this.recogerObjeto(jugador, objeto);
+            });
         });
     }
 
@@ -138,10 +148,10 @@ export class GameScene extends Phaser.Scene{
     }
 
     recogerMoneda(jugador, moneda){
-        jugador.sumarPuntos(moneda.valor);
+        const ganados = jugador.sumarPuntos(moneda.valor);
 
         const color = moneda.especial ? '#ff6ad5' : '#ffc20e';
-        this.textoFlotante(moneda.x, moneda.y - 10, '+' + moneda.valor, color);
+        this.textoFlotante(moneda.x, moneda.y - 10, '+' + ganados, color);
 
         moneda.recoger();
         this.events.emit('puntos', jugador.id, jugador.puntos);
@@ -187,6 +197,7 @@ export class GameScene extends Phaser.Scene{
             .setOrigin(0.5)
             .setDepth(1000);
         this.fantasmas.getChildren().forEach(f => f.desaparecer());
+        this.jugadores.forEach(j => j.terminarSobrecarga());
     }
     crearFantasmas(){
         this.fantasmas = this.physics.add.group();
@@ -227,7 +238,35 @@ export class GameScene extends Phaser.Scene{
             repeat: 3
         });
     }
+    crearObjetos(){
+        this.objetos = this.physics.add.group();
 
+        this.time.addEvent({
+            delay: INTERVALO_BATERIA,
+            loop: true,
+            callback: () => this.generarObjeto('bateria', MAX_BATERIAS_MAPA)
+        });
+    }
+
+    generarObjeto(tipo, maximo){
+        //Contamos solo los objetos de ese tipo
+        const cuantos = this.objetos.getChildren().filter(o => o.tipo === tipo && o.body.enable).length;
+        if (cuantos >= maximo) return;
+
+        const celda = Phaser.Utils.Array.GetRandom(this.celdasLibres);
+        this.objetos.add(new PowerUp(this, celda.x, celda.y + 4, tipo));
+    }
+
+    recogerObjeto(jugador, objeto){
+        if (objeto.tipo === 'bateria'){
+            if (!jugador.recogerBateria()) return;//Lleno: no la recoge
+            objeto.recoger();
+
+            const texto = jugador.baterias === 4 ? '¡LISTA!' : jugador.baterias + '/4';
+            this.textoFlotante(objeto.x, objeto.y - 10, texto, '#20c47e');
+        }
+        //TODO: altavoz
+    }
 
 
     update(){

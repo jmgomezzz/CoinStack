@@ -32,6 +32,14 @@ export class PreloadScene extends Phaser.Scene{
         this.load.image('moneda_especial_1', 'assets/images/monedas/moneda_especial_1.png');
         this.load.image('moneda_especial_2', 'assets/images/monedas/moneda_especial_2.png');
 
+
+        //Objetos 
+        this.load.image('barrera_2', 'assets/images/barreras/barrera_2.png');
+        this.load.image('bateria', 'assets/images/objetos/bateria.png');
+        this.load.image('altavoz', 'assets/images/objetos/altavoz.png');
+        this.load.image('arbusto', 'assets/images/objetos/arbusto.png');
+
+        
         //Personajes
         this.load.spritesheet('robots', 'assets/images/personajes/robots.png', {
             frameWidth: 24,
