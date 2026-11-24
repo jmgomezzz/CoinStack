@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CONTROLES_POR_DEFECTO } from '../config.js';
 
 export class ControlsScene extends Phaser.Scene {
 
@@ -7,6 +8,32 @@ export class ControlsScene extends Phaser.Scene {
     }
 
     create() {
+        // BOTÓN RESTABLECER
+    const imagenRestablecer = this.add.image(85, 162, 'boton')
+        .setDisplaySize(150, 25)
+        .setInteractive({ useHandCursor: true });
+
+    const restablecerBtn = this.add.text(85, 162, 'RESTABLECER', {
+        fontSize: '9px',
+        fontFamily: 'Pixel',
+        color: '#ffdb35'
+    }).setOrigin(0.5);
+
+    imagenRestablecer
+        .on('pointerover', () => restablecerBtn.setStyle({ color: '#ffffff' }))
+        .on('pointerout', () => restablecerBtn.setStyle({ color: '#ffdb35' }))
+        .on('pointerdown', () => {
+
+            if (!this.cambiandoTecla) {
+
+                this.registry.set('controles', {
+                    j1: { ...CONTROLES_POR_DEFECTO.j1 },
+                    j2: { ...CONTROLES_POR_DEFECTO.j2 }
+                });
+
+                this.scene.restart();
+            }
+        });
 
         //recuperar controles
         const controles = this.registry.get('controles');
@@ -68,11 +95,11 @@ export class ControlsScene extends Phaser.Scene {
 
 
         //boton VOLVER
-        const imagenVolver = this.add.image(160, 162, 'boton')
+        const imagenVolver = this.add.image(240, 162, 'boton')
             .setDisplaySize(125, 25)
             .setInteractive({ useHandCursor: true });
 
-        const volverBtn = this.add.text(160, 162, 'VOLVER', {
+        const volverBtn = this.add.text(240, 162, 'VOLVER', {
             fontSize: '12px',
             fontFamily: 'Pixel',
             color: '#ffdb35'

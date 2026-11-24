@@ -14,7 +14,8 @@ preload() {
     create() {
         //fondo del menu
         this.add.image(0, 0, 'fondo')
-            .setOrigin(0, 0)
+            .setOrigin(0, 0)
+
             .setDisplaySize(320, 180);
 
         //titulo del menu
@@ -68,24 +69,24 @@ preload() {
     imagenAjustes
         .on('pointerover', () => ajustesBtn.setStyle({ color: '#ffffff' }))
         .on('pointerout', () => ajustesBtn.setStyle({ color: '#ffdb35' }))
-        .on('pointerdown', () => console.log('Ajustes'));
+        .on('pointerdown', () => this.scene.start('SettingsScene'));
        
-        // Boton SALIR
+        // Boton CREDITOS
     
-    const imagenSalir = this.add.image(81, 150, 'boton')
+    // Boton CREDITOS
+    const imagenCreditos = this.add.image(81, 150, 'boton')
         .setDisplaySize(125, 28)
         .setInteractive({ useHandCursor: true });
 
-    const salirBtn = this.add.text(81, 150, 'SALIR', {
-        fontSize: '16px',
+    const creditosBtn = this.add.text(81, 150, 'CRÉDITOS', {
+        fontSize: '13px',
         fontFamily: 'Pixel',
         color: '#ffdb35'
     }).setOrigin(0.5);
 
-    imagenSalir
-        .on('pointerover', () => salirBtn.setStyle({ color: '#ffffff' }))
-        .on('pointerout', () => salirBtn.setStyle({ color: '#ffdb35' }))
-        .on('pointerdown', () => console.log('Salir'));
-        }
+    imagenCreditos
+        .on('pointerover', () => creditosBtn.setStyle({ color: '#ffffff' }))
+        .on('pointerout', () => creditosBtn.setStyle({ color: '#ffdb35' }))
+        .on('pointerdown', () => this.scene.start('CreditsScene'));
     }
-
+}
