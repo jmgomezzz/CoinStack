@@ -8,61 +8,60 @@ export class SettingsScene extends Phaser.Scene {
 
     create() {
 
-        //Fondo de pantalla
+        //fondo de pantalla
         this.add.image(0, 0, 'fondo')
             .setOrigin(0, 0)
-            .setDisplaySize(1280, 720);
+            .setDisplaySize(320, 180);
 
         //capa gris encima del fondo
-        this.add.rectangle(640, 360, 1280, 720, 0x555555, 0.7);
+        this.add.rectangle(160, 90, 320, 180, 0x555555, 0.7);
 
-        //Titulo
-        this.add.text(640, 100, 'AJUSTES', {
-            fontSize: '60px',
+        //titulo
+        this.add.text(160, 25, 'AJUSTES', {
+            fontSize: '15px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
-
         //volumen
-        this.add.text(120, 240, 'VOLUMEN', {
-            fontSize: '36px',
+        this.add.text(20, 60, 'VOLUMEN', {
+            fontSize: '9px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0, 0.5);
 
-        //recuperar el volumen actual
         let volumen = this.sound.volume;
 
-        this.add.rectangle(825, 240, 600, 20, 0x999999);
-
+        //barra gris
+        this.add.rectangle(206, 60, 150, 5, 0x999999);
+        //barra de color
         const barraVolumen = this.add.rectangle(
-            525, 240, 600 * volumen, 20, 0x245b57
+            131, 60, 150 * volumen, 5, 0x245b57
         ).setOrigin(0, 0.5);
 
-        //Cuadrado blanco para moverlo y cambiar volumen
+        //cuadrado que sube y baja el volumen
         const selector = this.add.rectangle(
-            525 + 600 * volumen, 240, 40, 40, 0xffffff
+            131 + 150 * volumen, 60, 10, 10, 0xffffff
         ).setInteractive({ useHandCursor: true });
 
-        //porcentaje de volumen
+        //porcentaje del volumen
         const textoVolumen = this.add.text(
-            825, 300, Math.round(volumen * 100) + '%', {
-                fontSize: '24px',
+            206, 75, Math.round(volumen * 100) + '%', {
+                fontSize: '8px',
                 fontFamily: 'Pixel',
                 color: '#ffffff'
             }).setOrigin(0.5);
 
-        //permitir arrastrar el cuadrado
+        //arrastrar el selector
         this.input.setDraggable(selector);
 
         selector.on('drag', (pointer, dragX) => {
 
-            selector.x = Phaser.Math.Clamp(dragX, 525, 1125);
+            selector.x = Phaser.Math.Clamp(dragX, 131, 281);
 
-            volumen = (selector.x - 525) / 600;
+            volumen = (selector.x - 131) / 150;
 
-            barraVolumen.width = 600 * volumen;
+            barraVolumen.setSize(150 * volumen, 5);
 
             this.sound.setVolume(volumen);
 
@@ -73,12 +72,12 @@ export class SettingsScene extends Phaser.Scene {
 
 
         //boton CAMBIAR CONTROLES
-        const imagenControles = this.add.image(640, 420, 'boton')
-            .setDisplaySize(850, 130)
+        const imagenControles = this.add.image(160, 105, 'boton')
+            .setDisplaySize(230, 32)
             .setInteractive({ useHandCursor: true });
 
-        const controlesBtn = this.add.text(640, 420, 'CAMBIAR CONTROLES', {
-            fontSize: '36px',
+        const controlesBtn = this.add.text(160, 105, 'CAMBIAR CONTROLES', {
+            fontSize: '10px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
@@ -90,12 +89,12 @@ export class SettingsScene extends Phaser.Scene {
 
 
         //boton VOLVER
-        const imagenVolver = this.add.image(640, 600, 'boton')
-            .setDisplaySize(500, 110)
+        const imagenVolver = this.add.image(160, 150, 'boton')
+            .setDisplaySize(125, 28)
             .setInteractive({ useHandCursor: true });
 
-        const volverBtn = this.add.text(640, 600, 'VOLVER', {
-            fontSize: '48px',
+        const volverBtn = this.add.text(160, 150, 'VOLVER', {
+            fontSize: '12px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
