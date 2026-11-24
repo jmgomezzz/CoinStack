@@ -5,6 +5,7 @@ import { Coins } from '../entities/Coins.js';
 const TILE = 10; //Tamaño de los tiles
 const PROB_ESPECIAL = 0.15; //Prob de moneda especial
 const MAX_MONEDAS = 10; //Máximo de monedas en pantalla
+const DURACION = 120; //Duración de la partida en segundos
 
 // # = barrera, O = obstáculo, A = salida J1, R = salida J2, . = suelo
 
@@ -35,12 +36,19 @@ export class GameScene extends Phaser.Scene{
     }
 
     create(){
+        this.tiempoRestante = DURACION;
+        this.partidaTerminada = false;
         this.crearZonas();
         this.crearMapa();
         this.crearMonedas();
         this.crearJugadores();
-        this.crearMarcador();
+        this.crearTemporizador();
 
+
+        //HUD encima del juego funcionando a la vez
+        this.scene.launch('HUDScene');
+        //Si el juego se cierra, el HUD también
+        this.events.once('shutdown', () => this.scene.stop('HUDScene'));
         //Transición suave de entrada
         this.cameras.main.fadeIn(400);
     }
@@ -128,7 +136,7 @@ export class GameScene extends Phaser.Scene{
         this.textoFlotante(moneda.x, moneda.y - 10, '+' + moneda.valor, color);
 
         moneda.recoger();
-        this.actualizarMarcador();
+        this.events.emit('puntos', jugador.id, jugador.puntos);
     }
 
     textoFlotante(x, y, texto, color){
@@ -144,22 +152,35 @@ export class GameScene extends Phaser.Scene{
         onComplete: () => t.destroy()
     });
 }
+    crearTemporizador(){
+        //Cada segundo restamos uno.
+        this.time.addEvent({
+            delay: 1000,
+            repeat: DURACION - 1,
+            callback: () => {
+                this.tiempoRestante--;
+                this.events.emit('tiempo', this.tiempoRestante);
 
+                if (this.tiempoRestante === 0){
+                    this.terminarPartida();
+                }
+            }
+        });
+    }
 
-    crearMarcador(){
-    //Provisional
-    const estilo = { fontSize: '8px', fontFamily: 'Pixel', color: '#ffffff' };
-    this.textoJ1 = this.add.text(14, 1, '', estilo).setDepth(1000);
-    this.textoJ2 = this.add.text(306, 1, '', estilo).setOrigin(1, 0).setDepth(1000);
-    this.actualizarMarcador();
-}
+    terminarPartida(){
+        //Provisional
+        this.partidaTerminada = true;
+        this.physics.pause();
+        this.time.removeAllEvents();   //para de generar monedas
+        this.jugadores.forEach(j => j.sprite.anims.stop());
 
-actualizarMarcador(){
-    this.textoJ1.setText('VeloX: ' + this.jugador1.puntos);
-    this.textoJ2.setText('FlashY: ' + this.jugador2.puntos);
-}
-
+        this.add.text(160, 90, '¡TIEMPO!', { fontFamily: 'Pixel', fontSize: '16px', color: '#ffc20e' })
+            .setOrigin(0.5)
+            .setDepth(1000);
+    }
     update(){
+        if(this.partidaTerminada) return;
         this.jugadores.forEach(jugador => jugador.update());
         
     }   
