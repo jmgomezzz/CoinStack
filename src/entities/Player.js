@@ -54,6 +54,10 @@ export class Player{
     //Profundidad según la altura para que los robots se tapen entre sí
     this.sprite.setDepth(this.sprite.y);
     }
+
+    sumarPuntos(cantidad){
+        this.puntos += cantidad;
+    }
 }
 
 
