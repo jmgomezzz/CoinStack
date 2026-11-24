@@ -5,6 +5,8 @@ const ROBOTS = {
     velox : {animacion: 'velox_andar', frameQuieto: 4},
     flashy: {animacion: 'flashy_andar', frameQuieto: 0}
 };
+//Realentización arbusto
+const FACTOR_ARBUSTO = 0.5;
 
 export class Player{
     constructor(scene, id, x, y, teclas, robot){
@@ -16,6 +18,7 @@ export class Player{
         this.velocidad = 80;
         this.robot = ROBOTS[robot];
         this.aturdido = false;
+        this.enArbusto = false;
 
         this.sprite = scene.physics.add.sprite(x, y, 'robots', this.robot.frameQuieto);
 
@@ -57,7 +60,11 @@ export class Player{
 
         //Normalizar
         const direccion = new Phaser.Math.Vector2(dX, dY).normalize();
-        this.sprite.setVelocity(direccion.x * this.velocidad, direccion.y * this.velocidad);
+
+        //Si está en arbusto va más lento
+        const velocidad = this.enArbusto ? this.velocidad * FACTOR_ARBUSTO : this.velocidad;
+        this.sprite.setVelocity(direccion.x * velocidad, direccion.y * velocidad);
+        this.sprite.anims.timeScale = this.enArbusto ? 0.5 : 1;
 
         if(dX !== 0 || dY !== 0){
             this.sprite.anims.play(this.robot.animacion, true);

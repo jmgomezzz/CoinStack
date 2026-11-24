@@ -6,8 +6,12 @@ import { PowerUp } from '../entities/PowerUp.js';
 
 
 const TILE = 10; //Tamaño de los tiles
-const PROB_ESPECIAL = 0.15; //Prob de moneda especial
-const MAX_MONEDAS = 10; //Máximo de monedas en pantalla
+const FASES = [
+    { tiempo: 120, delay: 1000, max: 10, especial: 0.15 },
+    { tiempo: 60,  delay: 700,  max: 15, especial: 0.20 },
+    { tiempo: 30,  delay: 400,  max: 20, especial: 0.30 }
+];
+
 const DURACION = 120; //Duración de la partida en segundos
 const INTERVALO_FANTASMA = 15000;//Cada cuánto aparece un fantasma (ms)
 const PENALIZACION_FANTASMA = 6;//Puntos que quita
@@ -17,8 +21,9 @@ const INTERVALO_ALTAVOZ = 10000;//cada 10 s
 const MAX_ALTAVOCES_MAPA = 1;
 const RADIO_ALTAVOZ = 70;//Alcance de la onda en píxeles
 const DURACION_ATURDIDO = 6000;// 6 s
+const FACTOR_ARBUSTO = 0.5;//En el arbusto se va a la mitad de velocidad
 
-// # = barrera, O = obstáculo, A = salida J1, R = salida J2, . = suelo
+// # = barrera, O = obstáculo, * = arbusto, A = salida J1, R = salida J2, . = suelo
 
 const MAPA = [
     '################################',
@@ -30,14 +35,14 @@ const MAPA = [
     '#........##..........##........#',
     '#........##..........##........#',
     '#....O....................O....#',
-    '#..............................#',
-    '#..............................#',
+    '#...........********...........#',
+    '#...........********...........#',
     '#..##.....O..........O.....##..#',
     '#..##......................##..#',
     '#..#####....##....##....#####..#',
-    '#...........##....##...........#',
-    '#..............................#',
-    '#..............................#',
+    '#***........##....##........***#',
+    '#***........................***#',
+    '#***........................***#',
     '################################'
 ];
 
@@ -76,6 +81,7 @@ export class GameScene extends Phaser.Scene{
     crearMapa(){
         //Estáticos
         this.muros = this.physics.add.staticGroup();
+        this.arbustos = this.physics.add.staticGroup();
         this.salidas = {}; //guardamos donde empieza el jugador
         this.celdasLibres = []; //guardamos las celdas libres para poner monedas
         MAPA.forEach((fila, f) => {
@@ -97,6 +103,12 @@ export class GameScene extends Phaser.Scene{
                     this.add.tileSprite(x, y, 18, 18, textura);
                     this.salidas[caracter] = {x, y};
                 } else if(caracter === '.'){
+                    this.celdasLibres.push({x, y});
+                } else if (caracter === '*'){
+                    const arbusto = this.arbustos.create(x, y, 'arbusto');
+                    //Profundidad = su borde de abajo: tapa los pies del robot que lo cruza
+                    arbusto.setDepth(y + TILE / 2);
+                    //En los arbustos también pueden salir monedas: riesgo/recompensa
                     this.celdasLibres.push({x, y});
                 }
             });
@@ -132,22 +144,20 @@ export class GameScene extends Phaser.Scene{
 
     crearMonedas(){
         this.monedas = this.physics.add.group();
-
-        //Cada segundo generamos una moneda
-        this.time.addEvent({
-            delay: 1000,
+        this.fase = 0;
+        this.timerMonedas = this.time.addEvent({
+            delay: FASES[0].delay,
             loop: true,
             callback: () => this.generarMoneda()
         });
     }
-
+    //Ahora los limites salen de la fase
     generarMoneda(){
-        if(this.monedas.countActive() >= MAX_MONEDAS) return; //no generamos más de 10 monedas
+        const fase = FASES[this.fase];
+        if (this.monedas.countActive() >= fase.max) return;
 
         const celda = Phaser.Utils.Array.GetRandom(this.celdasLibres);
-        const especial = Math.random() < PROB_ESPECIAL;
-
-        //Para que la base de la moneda quede cerca del fondo de la casilla
+        const especial = Math.random() < fase.especial;
         this.monedas.add(new Coins(this, celda.x, celda.y + 4, especial));
     }
 
@@ -162,18 +172,18 @@ export class GameScene extends Phaser.Scene{
     }
 
     textoFlotante(x, y, texto, color){
-    const t = this.add.text(x, y, texto, { fontSize: '8px', fontFamily: 'Pixel', color: color })
-        .setOrigin(0.5)
-        .setDepth(1000);//Siempre por encima de todo
+        const t = this.add.text(x, y, texto, { fontSize: '8px', fontFamily: 'Pixel', color: color })
+            .setOrigin(0.5)
+            .setDepth(1000);//Siempre por encima de todo
 
-    this.tweens.add({
-        targets: t,
-        y: y - 10,
-        alpha: 0,
-        duration: 600,
-        onComplete: () => t.destroy()
-    });
-}
+        this.tweens.add({
+            targets: t,
+            y: y - 10,
+            alpha: 0,
+            duration: 600,
+            onComplete: () => t.destroy()
+        });
+    }
     crearTemporizador(){
         //Cada segundo restamos uno.
         this.time.addEvent({
@@ -182,6 +192,7 @@ export class GameScene extends Phaser.Scene{
             callback: () => {
                 this.tiempoRestante--;
                 this.events.emit('tiempo', this.tiempoRestante);
+                this.comprobarFase();
 
                 if (this.tiempoRestante === 0){
                     this.terminarPartida();
@@ -283,10 +294,13 @@ export class GameScene extends Phaser.Scene{
 
     update(){
         if(this.partidaTerminada) return;
-        this.jugadores.forEach(jugador => jugador.update());
-        this.fantasmas.getChildren().forEach(fantasma => fantasma.perseguir(this.jugadores)); //cada fotograma persigue al mas cercano
-        
-    }   
+        this.jugadores.forEach(jugador => {
+            jugador.enArbusto = this.physics.overlap(jugador.sprite, this.arbustos);
+            jugador.update();
+        });
+        this.fantasmas.getChildren().forEach(fantasma => fantasma.perseguir(this.jugadores));
+    }
+
     usarAltavoz(jugador){
         const rival = this.jugadores.find(j => j !== jugador);
         const x = jugador.sprite.x;
@@ -314,5 +328,48 @@ export class GameScene extends Phaser.Scene{
         } else {
             this.textoFlotante(x, y - 30, '¡FALLO!', '#aaaaaa');
         }
+    }
+    comprobarFase(){
+        const siguiente = this.fase + 1;
+        if (siguiente >= FASES.length) return;//Ya en la última
+        if (this.tiempoRestante > FASES[siguiente].tiempo) return;//Aún no toca
+
+        this.fase = siguiente;
+
+        //Quitamos el temporizador viejo y creamos uno más rápido
+        this.timerMonedas.remove();
+        this.timerMonedas = this.time.addEvent({
+            delay: FASES[this.fase].delay,
+            loop: true,
+            callback: () => this.generarMoneda()
+        });
+
+        this.anunciar('¡MÁS MONEDAS!');
+    }
+    anunciar(texto){
+        //Texto grande en el centro que aparece con un golpe y se desvanece
+        const t = this.add.text(160, 80, texto, { fontFamily: 'Pixel', fontSize: '16px', color: '#ffc20e' })
+            .setOrigin(0.5)
+            .setDepth(1000)
+            .setStroke('#000000', 4)
+            .setScale(2)
+            .setAlpha(0);
+
+        this.tweens.add({
+            targets: t,
+            scale: 1,
+            alpha: 1,
+            duration: 250,
+            ease: 'Back.Out',
+            onComplete: () => {
+                this.tweens.add({
+                    targets: t,
+                    alpha: 0,
+                    delay: 1000,
+                    duration: 400,
+                    onComplete: () => t.destroy()
+                });
+            }
+        });
     }
 }
