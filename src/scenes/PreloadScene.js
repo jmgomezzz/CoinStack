@@ -39,7 +39,7 @@ export class PreloadScene extends Phaser.Scene{
         this.load.image('altavoz', 'assets/images/objetos/altavoz.png');
         this.load.image('arbusto', 'assets/images/objetos/arbusto.png');
 
-        
+
         //Personajes
         this.load.spritesheet('robots', 'assets/images/personajes/robots.png', {
             frameWidth: 24,
@@ -53,7 +53,7 @@ export class PreloadScene extends Phaser.Scene{
         this.load.image('boton_pausa', 'assets/images/interfaz/boton_pausa.png');
         this.load.image('boton_menu', 'assets/images/interfaz/boton_menu.png');
         this.load.image('boton_reinicio', 'assets/images/interfaz/boton_reinicio.png');
-        this.load.image('controles', 'assets/images/interfaz/controles.png');
+        this.load.image('controles', 'assets/images/menu/controles.png');
         this.load.image('game_over', 'assets/images/interfaz/game_over.png');
 
     }
