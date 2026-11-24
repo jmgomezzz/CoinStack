@@ -70,6 +70,10 @@ export class PreloadScene extends Phaser.Scene{
             repeat: -1
         });
 
-        this.scene.start('GameScene');
+        //Esperamos a que la fuente esté lista antes de pintar ningún texto
+        document.fonts.load('8px Pixel').then(() => {
+            //Cuando el menú esté en index.js, cambiar por 'MenuScene'
+            this.scene.start('GameScene');
+        });
     }
 }
