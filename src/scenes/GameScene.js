@@ -208,6 +208,16 @@ export class GameScene extends Phaser.Scene{
         this.partidaTerminada = true;
         this.physics.pause();
         this.time.removeAllEvents();   //para de generar monedas
+        this.time.delayedCall(1500, () => { 
+            this.cameras.main.fadeOut(400);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                //start con datos: GameOverScene los recibe en su init()
+                this.scene.start('GameOverScene', {
+                    puntosJ1: this.jugador1.puntos,
+                    puntosJ2: this.jugador2.puntos
+                });
+            });
+        });
         this.jugadores.forEach(j => j.sprite.anims.stop());
 
         this.add.text(160, 90, '¡TIEMPO!', { fontFamily: 'Pixel', fontSize: '16px', color: '#ffc20e' })
@@ -216,6 +226,7 @@ export class GameScene extends Phaser.Scene{
         this.fantasmas.getChildren().forEach(f => f.desaparecer());
         this.jugadores.forEach(j => j.terminarSobrecarga());
         this.jugadores.forEach(j => j.recuperarse()); // Por si estaba aturdido al final de la partida
+        
     }
     crearFantasmas(){
         this.fantasmas = this.physics.add.group();
