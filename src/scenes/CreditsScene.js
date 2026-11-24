@@ -7,6 +7,8 @@ export class CreditsScene extends Phaser.Scene {
     }
 
     create() {
+        this.input.on('gameobjectdown', () => this.sound.play('clic')); //Sonido al pulsar cualquier botón
+        
 
         // Fondo
         this.add.image(0, 0, 'fondo')

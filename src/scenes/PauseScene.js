@@ -8,6 +8,8 @@ export class PauseScene extends Phaser.Scene {
     }
 
     create(){
+        this.input.on('gameobjectdown', () => this.sound.play('clic')); //Sonido al pulsar cualquier botón
+        
         //Fondo oscuro semitransparente
         this.add.rectangle(0, 0, 320, 180, 0x000000, 0.7).setOrigin(0);
 

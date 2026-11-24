@@ -11,6 +11,8 @@ export class HUDScene extends Phaser.Scene {
     }
 
     create(){
+        this.input.on('gameobjectdown', () => this.sound.play('clic')); //Sonido al pulsar cualquier botón
+        
         //Referencia a la escena del juego para escuchar sus eventos
         this.juego = this.scene.get('GameScene');
 

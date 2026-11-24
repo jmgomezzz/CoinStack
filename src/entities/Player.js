@@ -103,6 +103,7 @@ export class Player{
         this.scene.events.emit('baterias', this.id, 0);
         this.scene.events.emit('sobrecarga', this.id, true);
         this.scene.textoFlotante(this.sprite.x, this.sprite.y - 40, '¡SOBRECARGA!', '#ffc20e');
+        this.scene.sound.play('sobrecarga');
 
         //Brilla en amarillo mientras dura
         this.sprite.setTint(0xfff9bd);

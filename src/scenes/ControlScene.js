@@ -9,6 +9,8 @@ export class ControlsScene extends Phaser.Scene {
     }
 
     create() {
+        this.input.on('gameobjectdown', () => this.sound.play('clic')); //Sonido al pulsar cualquier botón
+        
 
         //variable para saber si estamos cambiando una tecla
         this.cambiandoTecla = false;

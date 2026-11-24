@@ -55,6 +55,18 @@ export class PreloadScene extends Phaser.Scene{
         this.load.image('boton_reinicio', 'assets/images/interfaz/boton_reinicio.png');
         this.load.image('controles', 'assets/images/menu/controles.png');
         this.load.image('game_over', 'assets/images/interfaz/game_over.png');
+
+        //Audio
+        this.load.audio('musica_menu', 'assets/audio/musica_menu.mp3');
+        this.load.audio('musica_partida', 'assets/audio/musica_partida.ogg');
+        this.load.audio('musica_victoria', 'assets/audio/musica_victoria.ogg');
+        this.load.audio('moneda', 'assets/audio/monedas.mp3');
+        this.load.audio('moneda_especial', 'assets/audio/monedas_especiales.mp3');
+        this.load.audio('pila', 'assets/audio/pila.mp3');
+        this.load.audio('sobrecarga', 'assets/audio/sobrecarga.mp3');
+        this.load.audio('altavoz', 'assets/audio/altavoz.mp3');
+        this.load.audio('fantasma', 'assets/audio/fantasma.wav');
+        this.load.audio('clic', 'assets/audio/click.mp3');
         this.load.image('boton', 'assets/images/menu/boton.png');
 
     }

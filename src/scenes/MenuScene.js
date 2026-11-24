@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { reproducirMusica } from '../audio.js';
 
 export class MenuScene extends Phaser.Scene {
     constructor() {
@@ -12,6 +13,10 @@ preload() {
 }
 
     create() {
+        //Música del menú (si ya sonaba no se reinicia)
+        reproducirMusica(this, 'musica_menu');
+        this.input.on('gameobjectdown', () => this.sound.play('clic')); //Sonido al pulsar cualquier botón
+        
         //fondo del menu
         this.add.image(0, 0, 'fondo')
             .setOrigin(0, 0)

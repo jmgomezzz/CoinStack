@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { reproducirMusica } from '../audio.js';
 
 const ESTILO = { fontFamily: 'Pixel', fontSize: '8px', color: '#ffffff' };
 
@@ -14,6 +15,10 @@ export class GameOverScene extends Phaser.Scene {
     }
 
     create(){
+        //Música de victoria, sin bucle
+        reproducirMusica(this, 'musica_victoria', false);
+        this.input.on('gameobjectdown', () => this.sound.play('clic')); //Sonido al pulsar cualquier botón
+        
         //Fondo con el "GAME OVER" de Marina
         this.add.image(0, 0, 'game_over').setOrigin(0).setDisplaySize(320, 180);
 

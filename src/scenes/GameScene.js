@@ -3,6 +3,7 @@ import { Player } from '../entities/Player.js';
 import { Coins } from '../entities/Coins.js';
 import { Ghost } from '../entities/Ghost.js';
 import { PowerUp } from '../entities/PowerUp.js';
+import { reproducirMusica } from '../audio.js';
 
 
 const TILE = 10; //Tamaño de los tiles
@@ -52,6 +53,9 @@ export class GameScene extends Phaser.Scene{
     }
 
     create(){
+        //Música de la partida
+        reproducirMusica(this, 'musica_partida');
+        
         this.tiempoRestante = DURACION;
         this.partidaTerminada = false;
         this.crearZonas();
@@ -170,6 +174,7 @@ export class GameScene extends Phaser.Scene{
         this.textoFlotante(moneda.x, moneda.y - 10, '+' + ganados, color);
 
         moneda.recoger();
+        this.sound.play(moneda.especial ? 'moneda_especial' : 'moneda'); //Sonido según el tipo de moneda
         this.events.emit('puntos', jugador.id, jugador.puntos);
     }
 
@@ -259,6 +264,7 @@ export class GameScene extends Phaser.Scene{
 
         //Feedback: tiembla la cámara y el robot parpadea
         this.cameras.main.shake(150, 0.01);
+        this.sound.play('fantasma');
         this.tweens.add({
             targets: jugador.sprite,
             alpha: 0.3,
@@ -295,6 +301,7 @@ export class GameScene extends Phaser.Scene{
         if (objeto.tipo === 'bateria'){
             if (!jugador.recogerBateria()) return;//Lleno: no la recoge
             objeto.recoger();
+            this.sound.play('pila');
 
             const texto = jugador.baterias === 4 ? '¡LISTA!' : jugador.baterias + '/4';
             this.textoFlotante(objeto.x, objeto.y - 10, texto, '#20c47e');
@@ -332,6 +339,7 @@ export class GameScene extends Phaser.Scene{
             onComplete: () => onda.destroy()
         });
         this.cameras.main.shake(100, 0.005);
+        this.sound.play('altavoz');
 
         //Está el rival dentro del radio?
         const distancia = Phaser.Math.Distance.Between(x, y, rival.sprite.x, rival.sprite.y - 10);
