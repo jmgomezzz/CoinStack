@@ -51,9 +51,12 @@ export class PreloadScene extends Phaser.Scene{
     }
 
     create(){
-        //Solo ponemos los controles por defecto si no hay guardados ya
+    //solo se ponen los controles por defecto si no hay guardados ya
         if(!this.registry.has('controles')){
-            this.registry.set('controles', CONTROLES_POR_DEFECTO);
+            this.registry.set('controles', {
+                j1: { ...CONTROLES_POR_DEFECTO.j1 },
+                j2: { ...CONTROLES_POR_DEFECTO.j2 }
+            });
         }
 
         //Animaciones de andar
