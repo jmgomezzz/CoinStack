@@ -32,12 +32,14 @@ export class HUDScene extends Phaser.Scene {
         this.juego.events.on('tiempo', this.actualizarTiempo, this);
         this.juego.events.on('puntos', this.actualizarPuntos, this);
         this.juego.events.on('baterias', this.actualizarBaterias, this);
+        this.juego.events.on('sobrecarga', this.actualizarSobrecarga, this);
 
         //Al cerrarse el HUD dejamos de escuchar (si no, en la revancha se duplicarían)
         this.events.once('shutdown', () => {
             this.juego.events.off('tiempo', this.actualizarTiempo, this);
             this.juego.events.off('puntos', this.actualizarPuntos, this);
             this.juego.events.off('baterias', this.actualizarBaterias, this);
+            this.juego.events.off('sobrecarga', this.actualizarSobrecarga, this);
         });
     }
 
@@ -60,8 +62,11 @@ export class HUDScene extends Phaser.Scene {
                 .setStrokeStyle(1, 0x000000);
             pilas.push(pila);
         }
+        const x2 = this.add.text(x + dir * 24, y - 14, 'x2', { ...ESTILO, color: '#ffc20e' })
+        .setOrigin(derecha ? 1 : 0, 0.5)
+        .setVisible(false);
 
-        return { texto, pilas };
+        return { texto, pilas, x2 };
     }
 
 
@@ -88,8 +93,28 @@ export class HUDScene extends Phaser.Scene {
     }
 
     actualizarBaterias(id, cantidad){
-        this.paneles[id].pilas.forEach((pila, i) => {
+        const panel = this.paneles[id];
+        panel.pilas.forEach((pila, i) => {
             pila.setFillStyle(i < cantidad ? COLOR_PILA_LLENA : COLOR_PILA_VACIA);
         });
+
+        //Con 4 pilas parpadean para avisar de que se puede activar
+        if (panel.parpadeo){
+            panel.parpadeo.stop();
+            panel.pilas.forEach(p => p.setAlpha(1));
+            panel.parpadeo = null;
+        }
+        if (cantidad === 4){
+            panel.parpadeo = this.tweens.add({
+                targets: panel.pilas,
+                alpha: 0.3,
+                duration: 200,
+                yoyo: true,
+                repeat: -1
+            });
+        }
+    }
+    actualizarSobrecarga(id, activa){
+    this.paneles[id].x2.setVisible(activa);
     }
 }

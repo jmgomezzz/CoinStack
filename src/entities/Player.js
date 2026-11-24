@@ -11,6 +11,8 @@ export class Player{
         this.scene = scene;
         this.id = id;
         this.puntos = 0;
+        this.baterias = 0;
+        this.sobrecargaActiva = false; 
         this.velocidad = 80;
         this.robot = ROBOTS[robot];
 
@@ -29,6 +31,11 @@ export class Player{
     }
 
     update(){
+        //JustDown = solo en el instante en el que se pulse
+        if (Phaser.Input.Keyboard.JustDown(this.teclas.sobrecarga)){
+        this.activarSobrecarga();
+        }
+
         //Dirección
         let dX = 0;
         let dY = 0;
@@ -56,8 +63,54 @@ export class Player{
     }
 
     sumarPuntos(cantidad){
-        this.puntos = Math.max(0, this.puntos + cantidad); //Nunca baja de 0
+        if (this.sobrecargaActiva && cantidad > 0){
+            cantidad *= 2;
+        }
+        const antes = this.puntos;
+        this.puntos = Math.max(0, this.puntos + cantidad);
+        return this.puntos - antes;    
     }
+
+    recogerBateria(){
+        //Con 4 ya está lleno, no la cogemos y se queda en el mapa para el rival
+        if (this.baterias >= 4) return false;
+        this.baterias++;
+        this.scene.events.emit('baterias', this.id, this.baterias);
+        return true;    
+    }
+
+    activarSobrecarga(){
+        if (this.baterias < 4 || this.sobrecargaActiva) return;
+
+        this.sobrecargaActiva = true;
+        this.baterias = 0;
+        this.scene.events.emit('baterias', this.id, 0);
+        this.scene.events.emit('sobrecarga', this.id, true);
+        this.scene.textoFlotante(this.sprite.x, this.sprite.y - 40, '¡SOBRECARGA!', '#ffc20e');
+
+        //Brilla en amarillo mientras dura
+        this.sprite.setTint(0xfff9bd);
+        this.brillo = this.scene.tweens.add({
+            targets: this.sprite,
+            alpha: 0.6,
+            duration: 150,
+            yoyo: true,
+            repeat: -1
+        });
+
+        //10 secs
+        this.scene.time.delayedCall(10000, () => this.terminarSobrecarga());
+    }
+    terminarSobrecarga(){
+        if (!this.sobrecargaActiva) return;
+        this.sobrecargaActiva = false;
+        this.brillo.stop();
+        this.sprite.setAlpha(1);
+        this.sprite.clearTint();
+        this.scene.events.emit('sobrecarga', this.id, false);
+    }
+
+
 }
 
 
