@@ -15,6 +15,7 @@ export class Player{
         this.sobrecargaActiva = false; 
         this.velocidad = 80;
         this.robot = ROBOTS[robot];
+        this.aturdido = false;
 
         this.sprite = scene.physics.add.sprite(x, y, 'robots', this.robot.frameQuieto);
 
@@ -31,6 +32,14 @@ export class Player{
     }
 
     update(){
+        //Aturdido: no se puede mover ni hacer nada
+        if (this.aturdido){
+            this.sprite.setVelocity(0, 0);
+            this.sprite.anims.stop();
+            this.sprite.setFrame(this.robot.frameQuieto);
+            this.sprite.setDepth(this.sprite.y);
+            return;
+        }
         //JustDown = solo en el instante en el que se pulse
         if (Phaser.Input.Keyboard.JustDown(this.teclas.sobrecarga)){
         this.activarSobrecarga();
@@ -106,8 +115,37 @@ export class Player{
         this.sobrecargaActiva = false;
         this.brillo.stop();
         this.sprite.setAlpha(1);
-        this.sprite.clearTint();
+        if (this.aturdido) this.sprite.setTint(0x8888ff);
+        else this.sprite.clearTint();
         this.scene.events.emit('sobrecarga', this.id, false);
+    }
+    aturdir(duracion){
+        //Si ya estaba aturdido, solo reiniciamos el tiempo
+        if (this.finAturdido) this.finAturdido.remove();
+        this.finAturdido = this.scene.time.delayedCall(duracion, () => this.recuperarse());
+        if (this.aturdido) return;
+
+        this.aturdido = true;
+        this.sprite.setTint(0x8888ff);//Azulado para diferenciarlo de sobrecarga
+
+        //Se tambalea sobre sus pies (el origen está abajo)
+        this.tambaleo = this.scene.tweens.add({
+            targets: this.sprite,
+            angle: { from: -10, to: 10 },
+            duration: 150,
+            yoyo: true,
+            repeat: -1
+        });
+    }
+
+    recuperarse(){
+        if (!this.aturdido) return;
+        this.aturdido = false;
+        this.tambaleo.stop();
+        this.sprite.setAngle(0);
+        //Si seguía en sobrecarga, recupera su brillo amarillo
+        if (this.sobrecargaActiva) this.sprite.setTint(0xfff9bd);
+        else this.sprite.clearTint();
     }
 
 
