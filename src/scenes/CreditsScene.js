@@ -1,4 +1,3 @@
-
 import Phaser from 'phaser';
 
 export class CreditsScene extends Phaser.Scene {
@@ -9,54 +8,61 @@ export class CreditsScene extends Phaser.Scene {
 
     create() {
 
-        //fondo
+        // Fondo
         this.add.image(0, 0, 'fondo')
             .setOrigin(0, 0)
             .setDisplaySize(320, 180);
 
-        //capa gris sobre el fondo
+        // Capa gris sobre el fondo
         this.add.rectangle(160, 90, 320, 180, 0x555555, 0.7);
 
-        //titulo
-        this.add.text(160, 22, 'CRÉDITOS', {
-            fontSize: '15px',
+        // Titulo
+        this.add.text(160, 13, 'CRÉDITOS', {
+            fontSize: '14px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
-        //nombre del videojuego
-        this.add.text(160, 47, 'COIN STACK', {
-            fontSize: '12px',
-            fontFamily: 'Pixel',
-            color: '#ffdb35'
-        }).setOrigin(0.5);
-
-        //desarrolladores y artistas
-        this.add.text(160, 68, 'DESARROLLADO POR:', {
+        // Nombre del videojuego
+        this.add.text(160, 30, 'COIN STACK', {
             fontSize: '9px',
             fontFamily: 'Pixel',
             color: '#ffffff'
         }).setOrigin(0.5);
 
+
         // Integrantes del grupo
-        this.add.text(160, 110,
-            'Irene Mendoza Mederos: diseñadora del icono del juego y programadora de los menús y ajustes.\n' +
-            'José ManuelGómez Ruiz: programador de la lógica del juego.\n' +
-            'Marina Perona García: diseñadora de tiles, obstáculos y objetos.\n' +
-            'Carla González Domínguez: diseñadora de interfaces, personajes y personajes.', {
-                fontSize: '8px',
-                fontFamily: 'Pixel',
-                color: '#ffffff',
-                align: 'center',
-                lineSpacing: 5
-            }).setOrigin(0.5);
+        this.crearCredito(
+            45,
+            'Irene Mendoza Mederos',
+            'Diseño del icono, programación\n de menús y ajustes'
+        );
+
+        this.crearCredito(
+            73,
+            'José Manuel Gómez Ruiz',
+            'Programación de la lógica del juego'
+        );
+
+        this.crearCredito(
+            101,
+            'Marina Perona García',
+            'Diseño de tiles, obstáculos y objetos'
+        );
+
+        this.crearCredito(
+            129,
+            'Carla González Domínguez',
+            'Diseño de interfaces y personajes'
+        );
+
 
         // Boton VOLVER
-        const imagenVolver = this.add.image(160, 162, 'boton')
-            .setDisplaySize(125, 25)
+        const imagenVolver = this.add.image(160, 165, 'boton')
+            .setDisplaySize(125, 24)
             .setInteractive({ useHandCursor: true });
 
-        const volverBtn = this.add.text(160, 162, 'VOLVER', {
+        const volverBtn = this.add.text(160, 165, 'VOLVER', {
             fontSize: '12px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
@@ -67,4 +73,27 @@ export class CreditsScene extends Phaser.Scene {
             .on('pointerout', () => volverBtn.setStyle({ color: '#ffdb35' }))
             .on('pointerdown', () => this.scene.start('MenuScene'));
     }
+
+
+    // Funcion para mostrar cada integrante
+    crearCredito(y, nombre, descripcion) {
+
+        // Nombre del integrante
+        this.add.text(160, y, nombre, {
+            fontSize: '8px',
+            fontFamily: 'Pixel',
+            color: '#ffdb35'
+        }).setOrigin(0.5);
+
+        // Funcion dentro del proyecto
+        this.add.text(160, y + 8, descripcion, {
+            fontSize: '6px',
+            fontFamily: 'Pixel',
+            color: '#ffffff',
+            align: 'center',
+            lineSpacing: 2,
+            wordWrap: { width: 290 }
+        }).setOrigin(0.5, 0);
+    }
 }
+
