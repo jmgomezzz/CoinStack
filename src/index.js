@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { PreloadScene } from './scenes/PreloadScene.js';
 import { GameScene } from './scenes/GameScene.js';
+import { HelpScene } from './scenes/HelpScene.js';
 
 const config = {
     type: Phaser.AUTO,      // WebGL if available; otherwise, Canvas
@@ -19,7 +20,9 @@ const config = {
             debug: false //lo uso para ver las colisiones
         }
     },
-    scene: [PreloadScene, GameScene]      // The first scene starts automatically
+    scene: [PreloadScene, GameScene, HelpScene, MenuScene]      // The first scene starts automatically
 };
 
-new Phaser.Game(config);
+document.fonts.load('48px Pixel').then(() => {
+    const game = new Phaser.Game(config);
+});
