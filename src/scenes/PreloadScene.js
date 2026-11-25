@@ -9,7 +9,7 @@ export class PreloadScene extends Phaser.Scene{
     preload(){
         //--Barra de carga--
         const ancho = 200;
-        this.add.text(160, 78, 'Cargando...', {fontsize: '8px', color: '#ffffff'}).setOrigin(0.5);
+        this.add.text(160, 78, 'Cargando...', {fontSize: '8px', fontFamily: 'Pixel', color: '#ffffff'}).setOrigin(0.5);
         this.add.rectangle(160, 90, ancho + 4, 10).setStrokeStyle(1, 0xffffff);
         const barra = this.add.rectangle(160 - ancho/2, 90, 0, 6, 0xffc20e).setOrigin(0, 0.5);
 

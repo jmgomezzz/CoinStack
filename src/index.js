@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import './textoNitido.js'; //Quita el suavizado de los textos para que se vean como pixel art
 import { PreloadScene } from './scenes/PreloadScene.js';
 import { GameScene } from './scenes/GameScene.js';
 import { HelpScene } from './scenes/HelpScene.js';
