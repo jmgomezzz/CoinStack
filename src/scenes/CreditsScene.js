@@ -20,14 +20,14 @@ export class CreditsScene extends Phaser.Scene {
 
         // Titulo
         this.add.text(160, 13, 'CRÉDITOS', {
-            fontSize: '14px',
+            fontSize: '16px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
         // Nombre del videojuego
         this.add.text(160, 30, 'COIN STACK', {
-            fontSize: '9px',
+            fontSize: '8px',
             fontFamily: 'Pixel',
             color: '#ffffff'
         }).setOrigin(0.5);
@@ -35,25 +35,25 @@ export class CreditsScene extends Phaser.Scene {
 
         // Integrantes del grupo
         this.crearCredito(
-            45,
+            42,
             'Irene Mendoza Mederos',
             'Diseño del icono, programación\n de menús y ajustes'
         );
 
         this.crearCredito(
-            73,
+            76,
             'José Manuel Gómez Ruiz',
             'Programación de la lógica del juego'
         );
 
         this.crearCredito(
-            101,
+            100,
             'Marina Perona García',
             'Diseño de tiles, obstáculos y objetos'
         );
 
         this.crearCredito(
-            129,
+            124,
             'Carla González Domínguez',
             'Diseño de interfaces y personajes'
         );
@@ -65,7 +65,7 @@ export class CreditsScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true });
 
         const volverBtn = this.add.text(160, 165, 'VOLVER', {
-            fontSize: '12px',
+            fontSize: '16px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
@@ -89,12 +89,12 @@ export class CreditsScene extends Phaser.Scene {
 
         // Funcion dentro del proyecto
         this.add.text(160, y + 8, descripcion, {
-            fontSize: '6px',
+            fontSize: '8px',
             fontFamily: 'Pixel',
             color: '#ffffff',
             align: 'center',
             lineSpacing: 2,
-            wordWrap: { width: 290 }
+            wordWrap: { width: 310 }
         }).setOrigin(0.5, 0);
     }
 }

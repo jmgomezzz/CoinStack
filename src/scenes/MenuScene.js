@@ -30,7 +30,7 @@ preload() {
             
         // Boton JUGAR
     const imagenJugar = this.add.image(81, 60, 'boton')
-    .setDisplaySize(125, 28)
+    .setDisplaySize(140, 28)
     .setInteractive({ useHandCursor: true });
 
     const localBtn = this.add.text(81, 60, 'JUGAR', {
@@ -46,7 +46,7 @@ preload() {
         
         // Boton AYUDA
     const imagenAyuda = this.add.image(81, 90, 'boton')
-        .setDisplaySize(125, 28)
+        .setDisplaySize(140, 28)
         .setInteractive({ useHandCursor: true });
 
     const ayudaBtn = this.add.text(81, 90, 'AYUDA', {
@@ -62,7 +62,7 @@ preload() {
            
          // Boton AJUSTES
     const imagenAjustes = this.add.image(81, 120, 'boton')
-        .setDisplaySize(125, 28)
+        .setDisplaySize(140, 28)
         .setInteractive({ useHandCursor: true });
 
     const ajustesBtn = this.add.text(81, 120, 'AJUSTES', {
@@ -80,11 +80,11 @@ preload() {
     
     // Boton CREDITOS
     const imagenCreditos = this.add.image(81, 150, 'boton')
-        .setDisplaySize(125, 28)
+        .setDisplaySize(140, 28)
         .setInteractive({ useHandCursor: true });
 
     const creditosBtn = this.add.text(81, 150, 'CRÉDITOS', {
-        fontSize: '13px',
+        fontSize: '16px',
         fontFamily: 'Pixel',
         color: '#ffdb35'
     }).setOrigin(0.5);

@@ -20,14 +20,14 @@ export class SettingsScene extends Phaser.Scene {
 
         //titulo
         this.add.text(160, 25, 'AJUSTES', {
-            fontSize: '15px',
+            fontSize: '16px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
         //volumen
         this.add.text(20, 60, 'VOLUMEN', {
-            fontSize: '9px',
+            fontSize: '8px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0, 0.5);
@@ -79,7 +79,7 @@ export class SettingsScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true });
 
         const controlesBtn = this.add.text(160, 105, 'CAMBIAR CONTROLES', {
-            fontSize: '10px',
+            fontSize: '8px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
@@ -96,7 +96,7 @@ export class SettingsScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true });
 
         const volverBtn = this.add.text(160, 150, 'VOLVER', {
-            fontSize: '12px',
+            fontSize: '16px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);

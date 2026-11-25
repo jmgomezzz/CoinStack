@@ -25,21 +25,21 @@ export class ControlsScene extends Phaser.Scene {
 
         //titulo
         this.add.text(160, 15, 'CAMBIAR CONTROLES', {
-            fontSize: '12px',
+            fontSize: '16px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
         //jugador 1
         this.add.text(80, 35, 'JUGADOR 1', {
-            fontSize: '10px',
+            fontSize: '8px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
 
         //jugador 2
         this.add.text(240, 35, 'JUGADOR 2', {
-            fontSize: '10px',
+            fontSize: '8px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
@@ -62,7 +62,7 @@ export class ControlsScene extends Phaser.Scene {
         //Instrucciones
         this.instrucciones = this.add.text(
             160, 143, 'PULSA SOBRE UN CONTROL', {
-                fontSize: '7px',
+                fontSize: '8px',
                 fontFamily: 'Pixel',
                 color: '#ffffff'
             }).setOrigin(0.5);
@@ -74,7 +74,7 @@ export class ControlsScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true });
 
         const restablecerBtn = this.add.text(85, 165, 'RESTABLECER', {
-            fontSize: '9px',
+            fontSize: '8px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
@@ -100,7 +100,7 @@ export class ControlsScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true });
 
         const volverBtn = this.add.text(240, 165, 'VOLVER', {
-            fontSize: '12px',
+            fontSize: '16px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0.5);
@@ -124,20 +124,20 @@ export class ControlsScene extends Phaser.Scene {
 
         // Nombre del movimiento
         this.add.text(x, y, nombre, {
-            fontSize: '7px',
+            fontSize: '8px',
             fontFamily: 'Pixel',
             color: '#ffdb35'
         }).setOrigin(0, 0.5);
 
         //boton
-        const imagenBoton = this.add.image(x + 112, y, 'boton')
+        const imagenBoton = this.add.image(x + 116, y, 'boton')
             .setDisplaySize(65, 17)
             .setInteractive({ useHandCursor: true });
 
         //Tecla actual
         const textoTecla = this.add.text(
-            x + 112, y, controles[jugador][movimiento], {
-                fontSize: '7px',
+            x + 116, y, controles[jugador][movimiento], {
+                fontSize: '8px',
                 fontFamily: 'Pixel',
                 color: '#ffdb35'
             }).setOrigin(0.5);
