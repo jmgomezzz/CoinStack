@@ -26,6 +26,45 @@ Coin Stack es un juego recolector competitivo en 2D para dos jugadores en red en
 
 ---
 
+## Fase 2: versión jugable en local
+
+En esta fase el juego es completamente jugable en local: dos jugadores comparten el mismo teclado y se enfrentan en el mismo ordenador. La conexión en red se añadirá en las siguientes fases.
+
+### Cómo ejecutarlo
+
+Es necesario tener instalado [Node.js](https://nodejs.org).
+
+```bash
+npm install      # instala Phaser y las herramientas de desarrollo
+npm run dev      # arranca el juego en http://localhost:3000
+```
+
+Para generar la versión final en la carpeta `dist/`: `npm run build`.
+
+### Capturas
+
+<p align="center">
+  <img src="img/captura_menu.png" alt="Menú principal" width="45%">
+  <img src="img/captura_partida.png" alt="Partida en curso" width="45%">
+  <img src="img/captura_pausa.png" alt="Menú de pausa" width="45%">
+  <img src="img/captura_ayuda.png" alt="Pantalla de ayuda" width="45%">
+</p>
+
+*Menú principal, partida en curso, menú de pausa y pantalla de ayuda.*
+
+### Novedades de la Fase 2
+
+- Juego completo: menú principal, ayuda, ajustes (volumen y cambio de teclas), créditos, partida, pausa y pantalla de fin de partida con revancha.
+- Todas las mecánicas del GDD implementadas: monedas normales y especiales, fantasma, pilas con sobrecarga, altavoz y arbustos que ralentizan.
+- HUD con temporizador, puntuación de cada jugador e indicador de pilas.
+- Progresión de la partida por fases: cuanto menos tiempo queda, más monedas aparecen.
+- Música distinta en el menú, en la partida y en la pantalla de resultados, y efectos de sonido.
+- Transiciones con fundidos entre escenas y efectos de cámara (temblor al recibir daño o usar el altavoz).
+
+Los cambios de diseño respecto a la Fase 1 se explican en el apartado [10](#10-cambios-respecto-a-la-fase-1).
+
+---
+
 # Game Design Document (GDD)
 
 ## Índice
@@ -39,6 +78,8 @@ Coin Stack es un juego recolector competitivo en 2D para dos jugadores en red en
 7. [Interfaz y diagrama de flujo](#7-interfaz-y-diagrama-de-flujo)
 8. [Comunicación y marketing](#8-comunicación-y-marketing)
 9. [Referencias](#9-referencias)
+10. [Cambios respecto a la Fase 1](#10-cambios-respecto-a-la-fase-1)
+11. [Créditos](#11-créditos)
 
 ---
 
@@ -95,8 +136,9 @@ El objetivo de cada jugador es recolectar el mayor número de monedas posible pa
 | Moverse arriba | `W` | `↑` |
 | Moverse abajo | `S` | `↓` |
 | Acción especial Sobrecarga | `Espacio` | `Enter` |
-| Usar el altavoz | Ratón (clic izquierdo) | Ratón (clic izquierdo) |
-| Pausa | `Esc` | `Esc` |
+| Pausa | `Esc` o clic en el botón de pausa | `Esc` o clic en el botón de pausa |
+
+Las teclas de movimiento y de sobrecarga se pueden cambiar en **Ajustes → Cambiar controles**. El ratón se usa para navegar por los menús y para el botón de pausa de la partida. El altavoz se activa automáticamente al recogerlo (ver [3.3.1](#331-mecánicas-principales)).
 
 ### 3.3. Mecánicas
 
@@ -104,32 +146,41 @@ El objetivo de cada jugador es recolectar el mayor número de monedas posible pa
 
 - Al pasar por encima de un ítem se recolecta automáticamente.
 - Las monedas básicas tienen un valor de 1 punto, mientras que las especiales tienen un valor de 3 puntos.
-- Al recolectar un fantasma el jugador pierde 6 puntos.
-- Al recoger un jugador cuatro pilas, se activa el modo sobrecarga, que otorga el doble de puntos al recoger monedas.
-- Si un jugador recoge un altavoz y lo usa cerca de su oponente, lo inmovilizará 6 segundos.
-- Al terminar la partida el jugador con más monedas gana.
+- Cada cierto tiempo aparece un fantasma que persigue lentamente al robot más cercano, atravesando las paredes. Si toca a un jugador, este pierde 6 puntos (la puntuación nunca baja de 0) y el fantasma desaparece.
+- Cuando un jugador tiene cuatro pilas, puede activar el modo sobrecarga con su tecla de acción especial: durante 10 segundos gana el doble de puntos al recoger monedas. Con cuatro pilas no se pueden recoger más.
+- Al recoger un altavoz se lanza automáticamente una onda expansiva desde la posición del jugador. Si el rival está dentro del alcance de la onda, queda aturdido (inmovilizado) 6 segundos; si está lejos, el altavoz se desperdicia.
+- Los arbustos del escenario ralentizan a la mitad la velocidad de los robots que los atraviesan.
+- Al terminar la partida el jugador con más puntos gana. Si ambos tienen los mismos puntos, hay empate.
 
 #### 3.3.2. Objetos y power-ups
 
 | Objeto | Efecto | Duración | Aparición |
 | :--- | :--- | :--- | :--- |
-| Moneda | +1 punto | Hasta el fin de la partida | Aleatoria cada segundo |
-| Batería | Con 4 activas, sobrecarga | Al activarse, 10 s | Aleatoria cada 15 s |
-| Altavoz | Aturde a un enemigo | 6 s | Aleatoria cada 10 s |
+| Moneda | +1 punto | Hasta el fin de la partida | Aleatoria; el ritmo aumenta según avanza la partida (ver 3.4) |
+| Moneda especial | +3 puntos | Hasta el fin de la partida | Igual que la moneda (15 % de probabilidad al principio, 30 % al final) |
+| Batería (pila) | Con 4, permite activar la sobrecarga | Al activarse, 10 s | Aleatoria cada 15 s (máximo 3 a la vez) |
+| Altavoz | Onda que aturde al rival si está cerca | 6 s | Aleatoria cada 10 s (máximo 1 a la vez) |
+| Fantasma | −6 puntos al tocarlo | Desaparece a los 8 s | Cada 15 s, lejos de los dos robots |
 
 #### 3.3.3. Sistema de puntuación
 
-- Monedas básicas: 1 punto.
-- Monedas especiales: 3 puntos.
-- Fantasma: -6 puntos.
+- Monedas básicas: 1 punto (2 en sobrecarga).
+- Monedas especiales: 3 puntos (6 en sobrecarga).
+- Fantasma: -6 puntos. La puntuación nunca baja de 0.
 
 ### 3.4. Físicas y dificultad
 
 - **Gravedad y salto:** inexistente (vista cenital).
-- **Colisiones:** exclusivas con las paredes.
-- **Rebotes / fricción / empujes:** interacción al usar el altavoz.
-- **Plataformas móviles o superficies especiales (hielo, rebote...):** superficie especial de arbustos/espinas que ralentiza al jugador.
-- **Progresión de la dificultad:** a medida que avanza la partida aparecen más monedas y objetos.
+- **Colisiones:** los robots chocan con las paredes y los obstáculos, pero no entre sí. Solo colisionan sus pies, de forma que la cabeza puede pasar por delante de una pared que está detrás (vista cenital con orden de profundidad). Los fantasmas atraviesan las paredes.
+- **Rebotes / fricción / empujes:** onda expansiva del altavoz, que aturde al rival dentro de su alcance.
+- **Plataformas móviles o superficies especiales (hielo, rebote...):** arbustos que ralentizan a la mitad al jugador que los cruza.
+- **Progresión de la dificultad:** la partida se divide en tres fases. Al cambiar de fase se anuncia "¡MÁS MONEDAS!" en pantalla.
+
+| Fase | Tiempo restante | Aparición de monedas | Máximo en el mapa | Probabilidad de especial |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | 2:00 – 1:01 | Cada 1 s | 10 | 15 % |
+| 2 | 1:00 – 0:31 | Cada 0,7 s | 15 | 20 % |
+| 3 | 0:30 – 0:00 | Cada 0,4 s | 20 | 30 % |
 
 ### 3.5. Escenario
 
@@ -137,6 +188,8 @@ El escenario representa un estadio. Se compone de 2 zonas:
 
 1. **Zona Azul:** mitad de la cancha del jugador 1.
 2. **Zona Roja:** mitad de la cancha del jugador 2.
+
+En la versión jugable, el estadio es una cuadrícula de 32×18 casillas de 10×10 píxeles. El mapa es simétrico para que ningún jugador tenga ventaja: está rodeado por una barrera exterior y contiene bloques de barreras interiores, obstáculos, una franja de arbustos en el centro (la zona más disputada) y otras dos en las esquinas inferiores. Cada jugador empieza en su casilla de salida, en la parte superior central.
 
 ![Mapa del escenario](img/mapa_escenario.png)
 
@@ -180,7 +233,7 @@ Ambos tienen las mismas habilidades, por lo que ninguno tiene una habilidad espe
 
 <img src="img/enemigo_1.png" alt="Boceto del enemigo Fantasma" width="250">
 
-Aparece un fantasma en determinados momentos de la partida y resta 6 puntos al jugador que lo toca.
+Cada 15 segundos aparece un fantasma lejos de los dos robots. Persigue lentamente al robot más cercano atravesando las paredes, resta 6 puntos al jugador que toca y desaparece a los 8 segundos si no alcanza a nadie.
 
 ---
 
@@ -194,7 +247,9 @@ Aparece un fantasma en determinados momentos de la partida y resta 6 puntos al j
 
 ### 5.2. Estilo visual
 
-El juego utiliza un estilo pixel art en una pantalla de resolución total 320x180 píxeles porque permite crear escenarios y personajes lo suficientemente detallados sin perder el estilo pixel art.
+El juego utiliza un estilo pixel art en una pantalla de resolución total 320x180 píxeles porque permite crear escenarios y personajes lo suficientemente detallados sin perder el estilo pixel art. Todos los sprites están dibujados a su tamaño real y el juego se escala a la ventana sin suavizado, para que los píxeles se vean nítidos.
+
+La tipografía de todo el juego es *Press Start 2P*, una fuente pixel art que encaja con el estilo visual.
 
 ### 5.3. Uso de colores
 
@@ -215,7 +270,7 @@ Paleta por colores:
 ### 5.4. Aspectos técnicos: cámara y representación
 
 - **Representación:** 2D, vista cenital.
-- **Cámara:** fija, mostrando todo el escenario.
+- **Cámara:** fija, mostrando todo el escenario. Se usan efectos de cámara: fundidos al entrar y salir de las escenas y temblor al tocar un fantasma o al usar el altavoz.
 - **Resolución base:** 320x180 píxeles.
 
 ### 5.5. Inspiración artística y cultural
@@ -237,13 +292,15 @@ Los bocetos de los personajes se encuentran en el apartado [4.2](#42-personajes)
 
 ### 6.1. Banda sonora
 
-| Pista | Escena | Estilo / ambiente | Fuente / licencia |
-| :--- | :--- | :--- | :--- |
-| CoinMash! | Menú principal | Música 16 bits enérgica | Propia |
-| The War of Coins | Partida | Música de ritmo rápido | Propia |
-| I win! | Victoria | Fanfarria victoriosa | Propia |
-| You'll get'em next time | Derrota | Piano triste | Propia |
-| Torremolinos Type Beat | Activación del altavoz | Base de trap | Propia |
+Finalmente no se ha compuesto música propia: se han usado pistas con licencia libre de OpenGameArt (autores y licencias en el apartado [11](#11-créditos)).
+
+| Pista | Escena | Estilo / ambiente |
+| :--- | :--- | :--- |
+| Noisy Tubes | Menú principal, ayuda, ajustes y créditos | Electrónica enérgica |
+| Cyber Core | Partida | Electrónica de ritmo rápido |
+| Winning the Race | Fin de partida | Electrónica festiva |
+
+La música del menú no se reinicia al moverse entre el menú, la ayuda, los ajustes y los créditos.
 
 ### 6.2. Efectos de sonido
 
@@ -251,10 +308,13 @@ Los bocetos de los personajes se encuentran en el apartado [4.2](#42-personajes)
 | :--- | :--- |
 | Recogida de moneda | Al recoger una moneda |
 | Recogida de moneda especial | Al recoger una moneda especial |
-| Bono incompleto | Al recoger las 3 primeras pilas |
-| Bono | Al recoger la última pila |
-| Click | Al hacer click en menús |
-| Pausa | Al pausar |
+| Pila | Al recoger una pila |
+| Sobrecarga | Al activar la sobrecarga |
+| Altavoz | Al lanzar la onda del altavoz |
+| Fantasma | Al ser tocado por un fantasma |
+| Click | Al pulsar cualquier botón |
+
+El volumen general se ajusta en **Ajustes** y el sonido se puede silenciar desde el menú de pausa.
 
 ---
 
@@ -289,24 +349,25 @@ Los bocetos de los personajes se encuentran en el apartado [4.2](#42-personajes)
 ```mermaid
 flowchart TB
     A[Pantalla de carga] --> B[Menú principal]
-    B -->|Jugar| C[Ajustes de partida]
+    B -->|Jugar| G[Partida]
     B --> D[Ajustes]
     B --> E[Ayuda]
     B --> F[Créditos]
 
+    D --> C[Cambiar controles]
+    C --> D
     D --> B
     E --> B
     F --> B
 
-    C --> G[Partida]
-    G --> H[Pausa]
+    G -->|Esc o botón de pausa| H[Pausa]
     H -->|Reanudar| G
-    H -->|Salir| B
-    H -->|Ajustes| D
+    H -->|Reiniciar| G
+    H -->|Menú principal| B
 
-    G -->|Condición de victoria| I[Fin de partida]
+    G -->|Se acaba el tiempo| I[Fin de partida]
     I -->|Revancha| G
-    I -->|Menú principal| B
+    I -->|Menú| B
 ```
 
 ---
@@ -326,3 +387,42 @@ flowchart TB
 [1] Schell, J. (2019). *The Art of Game Design: A Book of Lenses* (3.ª ed.). CRC Press.
 
 [2] Phaser Studio. (s. f.). *Phaser 3 Documentation*. https://docs.phaser.io
+
+---
+
+## 10. Cambios respecto a la Fase 1
+
+Durante el desarrollo de la versión jugable se han tomado estas decisiones, que modifican lo planteado en la Fase 1:
+
+- **Altavoz automático:** al jugar dos personas en el mismo ordenador comparten un único ratón, así que usar el altavoz con clic resultaba ambiguo. Ahora se activa al recogerlo y lanza una onda con un alcance visible; solo aturde al rival si está dentro de ella.
+- **Sobrecarga manual:** al juntar 4 pilas la sobrecarga no se activa sola, sino que el jugador decide cuándo usarla con su tecla de acción especial.
+- **Fantasma que persigue:** en lugar de ser un objeto quieto, persigue lentamente al robot más cercano y desaparece pasados 8 segundos.
+- **Puntuación mínima de 0:** el fantasma no puede dejar a un jugador con puntos negativos.
+- **Sin ajustes de partida:** el botón Jugar empieza la partida directamente.
+- **Pausa:** además de reanudar y volver al menú, permite reiniciar la partida y silenciar el sonido. Los ajustes completos están disponibles desde el menú principal.
+- **Música:** se ha sustituido la banda sonora propia prevista por pistas con licencia libre, y se ha eliminado la música de derrota y la del altavoz.
+
+---
+
+## 11. Créditos
+
+### Equipo
+
+- **Irene Mendoza Mederos:** diseño del icono y programación de los menús y ajustes.
+- **José Manuel Gómez Ruiz:** programación de la lógica del juego.
+- **Marina Perona García:** diseño de tiles, obstáculos y objetos.
+- **Carla González Domínguez:** diseño de interfaces y personajes.
+
+### Recursos externos
+
+| Recurso | Uso en el juego | Autor | Licencia |
+| :--- | :--- | :--- | :--- |
+| [Noisy Tubes](https://opengameart.org/content/noisy-tubes) | Música del menú | HorrorPen | CC-BY |
+| [Cyber Core](https://opengameart.org/content/cyber-core) | Música de la partida | [oglsdl](https://opengameart.org/users/oglsdl) | CC0 |
+| [Winning the Race](https://opengameart.org/content/winning-the-race) | Música de fin de partida | section31 | CC0 |
+| [Shooting Sounds 003](https://opengameart.org/content/collaboration-sound-effects-shooting-sounds-003) | Sonido del altavoz | Jesús Lastra | CC-BY 3.0 |
+| [Electric Sound Effects Library](https://opengameart.org/content/electric-sound-effects-library) | Sonidos de monedas, moneda especial, pila y sobrecarga | Little Robot Sound Factory ([www.littlerobotsoundfactory.com](http://www.littlerobotsoundfactory.com)) | CC-BY 3.0 |
+| Sonido del fantasma | Al tocar un fantasma | José Manuel Gómez Ruiz | Propio |
+| Sonido de clic | Botones de los menús | Desconocido | Desconocida |
+| [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) | Tipografía | CodeMan38 | SIL Open Font License 1.1 |
+| [Phaser 3](https://phaser.io) | Motor del juego | Phaser Studio | MIT |
