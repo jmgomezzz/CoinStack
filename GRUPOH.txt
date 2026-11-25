@@ -1,0 +1,9 @@
+Grupo H - Coin Stack
+
+Integrantes:
+- Marina Perona García (m.perona.2024@alumnos.urjc.es)
+- Carla González Domínguez (c.gonzalezd.2024@alumnos.urjc.es)
+- Irene Mendoza Mederos (i.mendoza.2024@alumnos.urjc.es)
+- José Manuel Gómez Ruiz (jm.gomez.2024@alumnos.urjc.es)
+
+Repositorio: https://github.com/jmgomezzz/CoinStack
